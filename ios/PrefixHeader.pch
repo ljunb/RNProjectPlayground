@@ -1,0 +1,16 @@
+//
+//  PrefixHeader.pch
+//  RNProjectPlayground
+//
+//  Created by CookieJ on 2017/12/20.
+//  Copyright © 2017年 Facebook. All rights reserved.
+//
+
+#ifndef PrefixHeader_pch
+#define PrefixHeader_pch
+
+#define APP_MODULE_NAME @"RNProjectPlayground"
+
+#define PAGE_NAME_KEY @"pageName"
+
+#endif /* PrefixHeader_pch */

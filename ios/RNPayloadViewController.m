@@ -35,12 +35,12 @@
 }
 
 - (void)configInitialProperties {
-  [self.initialProperties setObject:self.pageName ?: @"default" forKey:@"pageName"];
+  [self.initialProperties setObject:self.pageName ?: @"default" forKey:PAGE_NAME_KEY];
 }
 
 - (void)setupRootView {
   RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:[ReactRootViewManager manager].bridge
-                                                   moduleName:@"RNProjectPlayground"
+                                                   moduleName:APP_MODULE_NAME
                                             initialProperties:self.initialProperties];
   rootView.backgroundColor = [UIColor whiteColor];
   self.view = rootView;

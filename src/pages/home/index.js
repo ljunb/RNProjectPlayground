@@ -1,5 +1,5 @@
 /**
- * Description :
+ * Description : 首页
  *
  * Author : cookiej
  * Date   : 2017/12/20
@@ -13,7 +13,7 @@ export default class Home extends Component<{}> {
   render() {
     return (
       <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-        <Text onPress={() => CJNavigation.push('mine')}>To Mine</Text>
+        <Text>Home</Text>
       </View>
     )
   }

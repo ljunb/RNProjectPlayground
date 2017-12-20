@@ -55,10 +55,10 @@
 		return;
 	}
   NSMutableDictionary *tmpInitialProperty = [NSMutableDictionary dictionaryWithDictionary:initialProperty];
-  [tmpInitialProperty setObject:pageName ?: @"default" forKey:@"pageName"];
+  [tmpInitialProperty setObject:pageName ?: @"default" forKey:PAGE_NAME_KEY];
 	// create root view with bridge
 	RCTRootView *rnView = [[RCTRootView alloc] initWithBridge:self.bridge
-																								 moduleName:@"RNProjectPlayground"
+																								 moduleName:APP_MODULE_NAME
 																					initialProperties:tmpInitialProperty];
 	[self.rootViewMap setObject:rnView forKey:pageName];
 }

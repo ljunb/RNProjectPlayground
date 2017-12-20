@@ -6,6 +6,8 @@
  * Time   : 16:53
  */
 export default {
-  'root': require('./pages/home'),
+  'main_tab': require('./pages'),
+  'home': require('./pages/home'),
+  'feed': require('./pages/feed'),
   'mine': require('./pages/mine'),
 }

@@ -29,8 +29,8 @@
 - (UIViewController *)setupRootViewControllerWithLaunchOptions:(NSDictionary *)launchOptions
 {
   RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:[ReactRootViewManager manager].bridge
-                                       moduleName:@"RNProjectPlayground"
-                                initialProperties:@{@"pageName": @"root"}];
+                                       moduleName:APP_MODULE_NAME
+                                initialProperties:@{PAGE_NAME_KEY: @"main_tab"}];
   
   UIViewController *rootViewController = [UIViewController new];
   rootViewController.view = rootView;
