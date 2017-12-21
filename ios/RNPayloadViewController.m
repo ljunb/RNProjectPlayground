@@ -34,6 +34,15 @@
   [self setupRootView];
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+  [super viewWillAppear:animated];
+  if ([[self lightContentPageNames] containsObject:self.pageName]) {
+    [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleLightContent;
+  } else {
+    [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleDefault;
+  }
+}
+
 - (void)configInitialProperties {
   [self.initialProperties setObject:self.pageName ?: @"default" forKey:PAGE_NAME_KEY];
 }
@@ -44,6 +53,19 @@
                                             initialProperties:self.initialProperties];
   rootView.backgroundColor = [UIColor whiteColor];
   self.view = rootView;
+}
+
+- (UIStatusBarStyle)preferredStatusBarStyle {
+  if ([[self lightContentPageNames] containsObject:self.pageName]) {
+    return UIStatusBarStyleLightContent;
+  }
+  return UIStatusBarStyleDefault;
+}
+
+- (NSArray *)lightContentPageNames {
+  return @[
+           @"main_tab",
+           ];
 }
 
 @end

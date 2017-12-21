@@ -10,6 +10,7 @@
 #import "AppDelegate.h"
 #import "CJNavigation.h"
 #import "ReactRootViewManager.h"
+#import "RNPayloadViewController.h"
 
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTRootView.h>
@@ -18,27 +19,17 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-  self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
-  UINavigationController *rootViewController = (UINavigationController *)[self setupRootViewControllerWithLaunchOptions:launchOptions];
-  self.navigationController = rootViewController;
-  self.window.rootViewController = rootViewController;
-  [self.window makeKeyAndVisible];
-  return YES;
-}
-
-- (UIViewController *)setupRootViewControllerWithLaunchOptions:(NSDictionary *)launchOptions
-{
-  RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:[ReactRootViewManager manager].bridge
-                                       moduleName:APP_MODULE_NAME
-                                initialProperties:@{PAGE_NAME_KEY: @"main_tab"}];
-  
-  UIViewController *rootViewController = [UIViewController new];
-  rootViewController.view = rootView;
-  UINavigationController *unv = [[UINavigationController alloc] initWithRootViewController:rootViewController];
+  RNPayloadViewController *rootVC = [[RNPayloadViewController alloc] initWithPageName:@"main_tab"
+                                                                               params:nil];
+  UINavigationController *unv = [[UINavigationController alloc] initWithRootViewController:rootVC];
   unv.navigationBarHidden = YES;
   unv.interactivePopGestureRecognizer.delegate = nil;
-
-  return unv;
+  
+  self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+  self.navigationController = unv;
+  self.window.rootViewController = unv;
+  [self.window makeKeyAndVisible];
+  return YES;
 }
 
 @end
