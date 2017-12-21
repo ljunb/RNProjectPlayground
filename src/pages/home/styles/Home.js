@@ -28,7 +28,7 @@ export default StyleSheet.create({
     height: 24,
   },
   headerSearchContainer: {
-    height: 50,
+    height: 44,
     width: Constant.screenW - 16 * 2,
     backgroundColor: 'white',
     borderRadius: 4,
@@ -84,5 +84,17 @@ export default StyleSheet.create({
     color: 'gray',
     fontSize: 12,
     marginTop: 5,
+  },
+  animatedNav: {
+    height: 64,
+    paddingTop: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgb(231, 139, 86)',
+    zIndex: 1,
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
   },
 });

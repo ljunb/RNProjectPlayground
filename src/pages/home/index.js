@@ -14,8 +14,10 @@ import {
   ScrollView,
   Image,
   ImageBackground,
+  Animated,
 } from 'react-native';
 import styles from './styles/Home';
+import CJNavigation from '../../bridges/CJNavigation';
 import Constant from '../../common/constants';
 import HomeModel from './models/HomeModel';
 import Loading from '../../components/Loading';
@@ -25,28 +27,49 @@ export default class Home extends Component<{}> {
   constructor(props) {
     super(props);
     this.homeModel = HomeModel.setup();
+
+    this.scrollOffsetY = new Animated.Value(0);
+    this.captureSearchAction = false;
+    this.scrollListener = this.scrollOffsetY.addListener(({value}) => {
+      // 透明度为1时才支持触发点击事件
+      this.captureSearchAction = value >= 220 - 64;
+    })
   }
 
   componentDidMount() {
     this.homeModel.fetchData();
   }
 
+  componentWillUnmount() {
+    this.scrollOffsetY.removeListener(this.scrollListener);
+  }
+
   handleRefresh = () => this.homeModel.refresh();
+
+  handleSearch = () => this.captureSearchAction && CJNavigation.push('search');
 
   render() {
     const {foodList, isLoading, isLoadError} = this.homeModel;
     const showContent = !isLoading && !isLoadError;
+    const navigationBarOpacity = this.scrollOffsetY.interpolate({
+      // 220 为HeaderView高度
+      inputRange: [0, 64, 220 - 64],
+      outputRange: [0, 0, 1],
+    });
 
     return (
       <View style={styles.container}>
+        <AnimatedNavigationBar opacity={navigationBarOpacity} onPress={this.handleSearch}/>
         <ScrollView
           removeClippedSubviews
           bounces={false}
           showsVerticalScrollIndicator={false}
           automaticallyAdjustContentInsets={false}
           contentContainerStyle={{alignItems: 'center', backgroundColor: '#f5f5f5', paddingBottom: 10}}
+          onScroll={Animated.event([{nativeEvent: {contentOffset: {y: this.scrollOffsetY}}}])}
+          scrollEventThrottle={16}
         >
-          <HeaderView searchAction={() => {}}/>
+          <HeaderView searchAction={() => CJNavigation.push('search')}/>
           <FoodHandleView handleAction={() => {}}/>
           {showContent &&
             <View>
@@ -62,6 +85,24 @@ export default class Home extends Component<{}> {
     );
   }
 }
+
+const AnimatedNavigationBar = ({opacity, onPress}) => {
+  return (
+    <Animated.View style={[styles.animatedNav, {opacity}]}>
+      <TouchableOpacity
+        activeOpacity={0.75}
+        style={[styles.headerSearchContainer, {height: 38}]}
+        onPress={onPress}
+      >
+        <Image
+          style={{width: 20, height: 20, marginHorizontal: 5}}
+          source={require('../../resource/ic_home_search.png')}
+        />
+        <Text style={{color: 'rgba(222, 113, 56, 0.8)', fontSize: 15}}>请输入食物名称</Text>
+      </TouchableOpacity>
+    </Animated.View>
+  );
+};
 
 const ReconnectView = ({onPress}) => {
   return (

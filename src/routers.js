@@ -8,6 +8,7 @@
 export default {
   'main_tab': require('./pages'),
   'home': require('./pages/home'),
+  'search': require('./pages/home/Search'),
   'feed': require('./pages/feed'),
   'mine': require('./pages/mine'),
 }

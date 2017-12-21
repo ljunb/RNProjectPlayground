@@ -1,0 +1,20 @@
+/**
+ * Description : 搜索页
+ *
+ * Author : cookiej
+ * Date   : 2017/12/21
+ * Time   : 16:33
+ */
+import React, { Component } from 'react';
+import {View, Text} from 'react-native';
+import CJNavigation from '../../bridges/CJNavigation';
+
+export default class Search extends Component<{}> {
+  render() {
+    return (
+      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+        <Text onPress={() => CJNavigation.pop()}>Search</Text>
+      </View>
+    )
+  }
+}

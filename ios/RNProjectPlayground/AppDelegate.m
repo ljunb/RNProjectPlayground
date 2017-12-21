@@ -36,6 +36,7 @@
   rootViewController.view = rootView;
   UINavigationController *unv = [[UINavigationController alloc] initWithRootViewController:rootViewController];
   unv.navigationBarHidden = YES;
+  unv.interactivePopGestureRecognizer.delegate = nil;
 
   return unv;
 }
