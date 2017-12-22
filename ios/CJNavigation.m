@@ -33,4 +33,22 @@ RCT_EXPORT_METHOD(pop:(BOOL)animated)
   [appDelegate.navigationController popViewControllerAnimated:animated];
 }
 
+RCT_EXPORT_METHOD(popTo:(NSString *)pageName animated:(BOOL)animated)
+{
+  AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
+  for (UIViewController *vc in appDelegate.navigationController.viewControllers) {
+    RNPayloadViewController *rnVC = (RNPayloadViewController *)vc;
+    if ([rnVC.pageName isEqualToString:pageName]) {
+      [appDelegate.navigationController popToViewController:rnVC animated:animated];
+      break;
+    }
+  }
+}
+
+RCT_EXPORT_METHOD(popToRoot:(BOOL)animated)
+{
+  AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
+  [appDelegate.navigationController popToRootViewControllerAnimated:animated];
+}
+
 @end

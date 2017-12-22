@@ -17,7 +17,7 @@ export default StyleSheet.create({
     width: Constant.screenW,
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingTop: Constant.__IOS__ ? 20 + 15 : 15,
+    paddingTop: 35,
     paddingBottom: 28,
     paddingHorizontal: 16,
     backgroundColor: 'rgba(1,1,1,0)',

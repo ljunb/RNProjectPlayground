@@ -12,7 +12,6 @@
 #import <React/RCTRootView.h>
 
 @interface RNPayloadViewController ()
-@property (nonatomic, copy) NSString *pageName;
 @property (nonatomic, strong) NSMutableDictionary *initialProperties;
 @end
 

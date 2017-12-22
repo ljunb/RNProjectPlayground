@@ -10,5 +10,4 @@ import {Dimensions, DeviceInfo, Platform} from 'react-native';
 export default {
   screenW: Dimensions.get('window').width,
   screenH: Dimensions.get('window').height,
-  __IOS__: Platform.OS === 'ios',
 }

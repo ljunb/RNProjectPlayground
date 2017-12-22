@@ -21,6 +21,19 @@ class Module {
    * @param {Boolean} animated 是否开启动画
    */
   static pop = (animated = true) => CJNavigation.pop(animated);
+
+  /**
+   * pop 到某个指定页面
+   * @param {String} pageName 页面名称
+   * @param {Boolean} animated 是否开启动画
+   */
+  static popTo = (pageName, animated = true) => CJNavigation.popTo(pageName, animated);
+
+  /**
+   * 返回到最先入栈的页面
+   * @param {Boolean} animated 是否开启动画
+   */
+  static popToRoot = (animated = true) => CJNavigation.popToRoot(animated);
 }
 
 export default Module;

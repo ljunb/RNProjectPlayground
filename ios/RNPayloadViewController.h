@@ -10,6 +10,8 @@
 
 @interface RNPayloadViewController : UIViewController
 
+@property (nonatomic, copy) NSString *pageName;
+
 - (instancetype)initWithPageName:(NSString *)pageName params:(NSDictionary *)params;
 
 @end
