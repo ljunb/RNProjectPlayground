@@ -89,18 +89,24 @@ export default class Home extends Component<{}> {
 const AnimatedNavigationBar = ({opacity, onPress}) => {
   return (
     <Animated.View style={[styles.animatedNav, {opacity}]}>
-      <TouchableOpacity
-        activeOpacity={0.75}
-        style={[styles.headerSearchContainer, {height: 38}]}
-        onPress={onPress}
-      >
-        <Image
-          style={{width: 20, height: 20, marginHorizontal: 5}}
-          source={require('../../resource/ic_home_search.png')}
-        />
-        <Text style={{color: 'rgba(222, 113, 56, 0.8)', fontSize: 15}}>请输入食物名称</Text>
-      </TouchableOpacity>
+      <SearchInputView onPress={onPress} style={{height: 38}}/>
     </Animated.View>
+  );
+};
+
+const SearchInputView = ({onPress, style}) => {
+  return (
+    <TouchableOpacity
+      activeOpacity={0.75}
+      style={[styles.headerSearchContainer, style]}
+      onPress={onPress}
+    >
+      <Image
+        style={{width: 20, height: 20, marginHorizontal: 5}}
+        source={require('../../resource/ic_home_search.png')}
+      />
+      <Text style={{color: 'rgba(222, 113, 56, 0.8)', fontSize: 15, fontWeight: '100'}}>请输入食物名称</Text>
+    </TouchableOpacity>
   );
 };
 
@@ -128,18 +134,8 @@ const HeaderView = ({searchAction}) => {
         resizeMode="contain"
       />
       <View style={{alignItems: 'center'}}>
-        <Text style={{color: 'white', marginBottom: 15, fontSize: 15}}>查 询 食 物 信 息</Text>
-        <TouchableOpacity
-          activeOpacity={0.75}
-          style={styles.headerSearchContainer}
-          onPress={searchAction}
-        >
-          <Image
-            style={{width: 20, height: 20, marginHorizontal: 5}}
-            source={require('../../resource/ic_home_search.png')}
-          />
-          <Text style={{color: 'rgba(222, 113, 56, 0.8)', fontSize: 15}}>请输入食物名称</Text>
-        </TouchableOpacity>
+        <Text style={{color: 'white', marginBottom: 15, fontSize: 16, fontWeight: '100'}}>查 询 食 物 信 息</Text>
+        <SearchInputView onPress={searchAction}/>
       </View>
     </ImageBackground>
   )
@@ -177,7 +173,7 @@ const HandleItem = ({imageName, title, onPress}) => {
       onPress={onPress}
     >
       <Image style={{width: 28, height: 28}} source={imageName}/>
-      <Text style={{fontSize: 13, color: 'gray'}}>{title}</Text>
+      <Text style={{fontSize: 13, color: '#999', fontWeight: '100'}}>{title}</Text>
     </TouchableOpacity>
   )
 };
@@ -194,7 +190,7 @@ const FoodGroupView = ({foodGroup, onPress}) => {
   return (
     <View style={{backgroundColor: 'white', marginTop: 10, overflow: 'hidden'}}>
       <View style={styles.groupHeader}>
-        <Text style={{color: 'gray'}}>{title}</Text>
+        <Text style={{color: '#333', fontSize: 15, fontWeight: '100'}}>{title}</Text>
         <View style={{width: Constant.screenW - 16 * 2, height: 14, backgroundColor: '#f5f5f5'}}>
           <Image
             style={{width: Constant.screenW - 16 * 2, height: 14}}

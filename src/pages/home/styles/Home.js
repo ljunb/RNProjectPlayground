@@ -81,9 +81,10 @@ export default StyleSheet.create({
     height: 40,
   },
   categoryTitle: {
-    color: 'gray',
+    color: '#999',
     fontSize: 12,
     marginTop: 5,
+    fontWeight: '100',
   },
   animatedNav: {
     height: 64,

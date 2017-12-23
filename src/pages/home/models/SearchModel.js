@@ -7,6 +7,7 @@
  */
 import {AsyncStorage} from 'react-native';
 import {types, flow} from 'mobx-state-tree';
+import _ from 'lodash';
 
 const SearchHistoryKey = 'SearchHistoryKey';
 const Search = types.model('Search', {
@@ -28,7 +29,7 @@ const Search = types.model('Search', {
   afterCreate: () => {
     // 获取搜索历史
     self.getHistoryKeywords();
-    // self.fetchHotKeywords;
+    self.fetchHotKeywords();
   },
   getHistoryKeywords: flow(function* () {
     try {
@@ -39,24 +40,30 @@ const Search = types.model('Search', {
       console.log(`[SearchModel] JSON parse historyKeywords error: ${e}`);
     }
   }),
+  clearHistoryKeywords: () => {
+    self.historyKeywords = [];
+    AsyncStorage.setItem(SearchHistoryKey, JSON.stringify(self.historyKeywords));
+  },
   fetchHotKeywords: flow(function* () {
     try {
-      // todo: no URL
-      const url = '';
+      const url = 'http://food.boohee.com/fb/v1/keywords';
       const responseData = yield fetch(url).then(res => res.json());
-
+      self.hotKeywords = _.chunk(responseData.keywords || [], 2);
     } catch (e) {
       console.log(`[SearchModel] fetch hot keywords error: ${e}`);
     }
   }),
   search: flow(function* (keyword) {
     try {
-      self.historyKeywords.push(keyword);
-      AsyncStorage.setItem(SearchHistoryKey, JSON.stringify(self.historyKeywords));
+      if (!keyword) return;
+      if (!self.historyKeywords.includes(keyword)) {
+        self.historyKeywords.push(keyword);
+        AsyncStorage.setItem(SearchHistoryKey, JSON.stringify(self.historyKeywords));
+      }
 
       // todo: get result from server
       const url = '';
-      const responseData = yield fetch(url).then(res => res.json())
+      // const responseData = yield fetch(url).then(res => res.json())
 
     } catch (e) {
       console.log(`[SearchModel] search keyword error: ${e}`);
