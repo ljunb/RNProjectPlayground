@@ -48,36 +48,50 @@ export default class Home extends Component<{}> {
 
   handleSearch = () => this.captureSearchAction && CJNavigation.push('search');
 
+  handleScroll = evt => {
+    const {y} = evt.nativeEvent.contentOffset;
+    this.scrollOffsetY.setValue(y);
+  };
+
+  /**
+   * 饮食分析、搜索对比、扫码对比点击事件
+   * @param {String} option 按钮名称
+   */
+  handlePressOption = option => alert(option);
+
+  /**
+   * 点击分组中具体条目
+   * @param {String} foodKind 分组名称
+   * @param {Object} food 食物数据对象
+   */
+  handlePressFood = (foodKind, food) => alert(JSON.stringify(food) + ':' + foodKind);
+
+  renderFoodGroupView = (foodGroup, index) => {
+    return <FoodGroupView key={`FoodGroup-${index}`} foodGroup={foodGroup} onPress={this.handlePressFood}/>
+  };
+
   render() {
     const {foodList, isLoading, isLoadError} = this.homeModel;
     const showContent = !isLoading && !isLoadError;
-    const navigationBarOpacity = this.scrollOffsetY.interpolate({
-      // 220 为HeaderView高度
-      inputRange: [0, 64, 220 - 64],
-      outputRange: [0, 0, 1],
-    });
 
     return (
       <View style={styles.container}>
-        <AnimatedNavigationBar opacity={navigationBarOpacity} onPress={this.handleSearch}/>
+        <AnimatedNavigationBar scrollOffsetY={this.scrollOffsetY} onPress={this.handleSearch}/>
+        <AnimatedHeaderImage scrollOffsetY={this.scrollOffsetY}/>
         <ScrollView
           removeClippedSubviews
-          bounces={false}
           showsVerticalScrollIndicator={false}
           automaticallyAdjustContentInsets={false}
-          contentContainerStyle={{alignItems: 'center', backgroundColor: '#f5f5f5', paddingBottom: 10}}
-          onScroll={Animated.event([{nativeEvent: {contentOffset: {y: this.scrollOffsetY}}}])}
+          contentContainerStyle={{alignItems: 'center', backgroundColor: 'transparent', paddingBottom: 10}}
+          onScroll={this.handleScroll}
           scrollEventThrottle={16}
         >
-          <HeaderView searchAction={() => CJNavigation.push('search')}/>
-          <FoodHandleView handleAction={() => {}}/>
-          {showContent &&
-            <View>
-              {foodList.map((foodGroup, index) => {
-                return <FoodGroupView key={`FoodGroup-${index}`} foodGroup={foodGroup} onPress={() => {}}/>
-              })}
-            </View>
-          }
+          <HeaderView
+            searchAction={() => CJNavigation.push('search')}
+            scrollValue={this.scrollOffsetY}
+          />
+          <FoodHandleView handleAction={this.handlePressOption}/>
+          {showContent && <View>{foodList.map(this.renderFoodGroupView)}</View>}
           {isLoadError && <ReconnectView onPress={this.handleRefresh}/>}
         </ScrollView>
         <Loading isShow={isLoading}/>
@@ -86,12 +100,40 @@ export default class Home extends Component<{}> {
   }
 }
 
-const AnimatedNavigationBar = ({opacity, onPress}) => {
+const AnimatedNavigationBar = ({scrollOffsetY, onPress}) => {
+  const opacity = scrollOffsetY.interpolate({
+    // 220 为HeaderView高度
+    inputRange: [0, 64, 220 - 64],
+    outputRange: [0, 0, 1],
+  });
   return (
     <Animated.View style={[styles.animatedNav, {opacity}]}>
       <SearchInputView onPress={onPress} style={{height: 38}}/>
     </Animated.View>
   );
+};
+
+const AnimatedHeaderImage = ({scrollOffsetY}) => {
+  // 图片宽、高、位移动画插值
+  const width = scrollOffsetY.interpolate({
+    inputRange: [-100, -80, 0, 10],
+    outputRange: [Constant.screenW + 50, Constant.screenW, Constant.screenW, Constant.screenW]
+  });
+  const height = scrollOffsetY.interpolate({
+    inputRange: [-30, 0, 220 - 64],
+    outputRange: [250, 220, 64]
+  });
+  const translateX = scrollOffsetY.interpolate({
+    inputRange: [-100, -80, 0, 10],
+    outputRange: [-25, 0, 0, 0]
+  });
+
+  return (
+    <Animated.Image
+      style={[styles.animatedBigImage, {width, height, transform: [{translateX}]}]}
+      source={require('../../resource/img_home_bg.png')}
+    />
+  )
 };
 
 const SearchInputView = ({onPress, style}) => {
@@ -124,10 +166,7 @@ const ReconnectView = ({onPress}) => {
 
 const HeaderView = ({searchAction}) => {
   return (
-    <ImageBackground
-      style={styles.headerContainer}
-      source={require('../../resource/img_home_bg.png')}
-    >
+    <View style={[styles.headerContainer]}>
       <ImageBackground
         style={styles.headerLogo}
         source={require('../../resource/ic_head_logo.png')}
@@ -137,7 +176,7 @@ const HeaderView = ({searchAction}) => {
         <Text style={{color: 'white', marginBottom: 15, fontSize: 16, fontWeight: '100'}}>查 询 食 物 信 息</Text>
         <SearchInputView onPress={searchAction}/>
       </View>
-    </ImageBackground>
+    </View>
   )
 };
 

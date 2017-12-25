@@ -21,7 +21,10 @@ export default StyleSheet.create({
     paddingBottom: 28,
     paddingHorizontal: 16,
     backgroundColor: 'rgba(1,1,1,0)',
-    overflow: 'hidden'
+  },
+  animatedBigImage: {
+    position: 'absolute',
+    top: 0,
   },
   headerLogo: {
     width: 66,
