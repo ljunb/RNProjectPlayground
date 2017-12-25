@@ -48,11 +48,6 @@ export default class Home extends Component<{}> {
 
   handleSearch = () => this.captureSearchAction && CJNavigation.push('search');
 
-  handleScroll = evt => {
-    const {y} = evt.nativeEvent.contentOffset;
-    this.scrollOffsetY.setValue(y);
-  };
-
   /**
    * 饮食分析、搜索对比、扫码对比点击事件
    * @param {String} option 按钮名称
@@ -83,7 +78,7 @@ export default class Home extends Component<{}> {
           showsVerticalScrollIndicator={false}
           automaticallyAdjustContentInsets={false}
           contentContainerStyle={{alignItems: 'center', backgroundColor: 'transparent', paddingBottom: 10}}
-          onScroll={this.handleScroll}
+          onScroll={Animated.event([{nativeEvent: {contentOffset: {y: this.scrollOffsetY}}}])}
           scrollEventThrottle={16}
         >
           <HeaderView
@@ -120,17 +115,21 @@ const AnimatedHeaderImage = ({scrollOffsetY}) => {
     outputRange: [Constant.screenW + 50, Constant.screenW, Constant.screenW, Constant.screenW]
   });
   const height = scrollOffsetY.interpolate({
-    inputRange: [-30, 0, 220 - 64],
-    outputRange: [250, 220, 64]
+    inputRange: [-30, 0, 10],
+    outputRange: [250, 220, 220]
   });
   const translateX = scrollOffsetY.interpolate({
     inputRange: [-100, -80, 0, 10],
     outputRange: [-25, 0, 0, 0]
   });
+  const translateY = scrollOffsetY.interpolate({
+    inputRange: [-10, 0, 10],
+    outputRange: [0, 0, -10],
+  });
 
   return (
     <Animated.Image
-      style={[styles.animatedBigImage, {width, height, transform: [{translateX}]}]}
+      style={[styles.animatedBigImage, {width, height, transform: [{translateX}, {translateY}]}]}
       source={require('../../resource/img_home_bg.png')}
     />
   )
