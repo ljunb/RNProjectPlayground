@@ -1,11 +1,11 @@
 /**
- * Description :
+ * Description : 通用加载更多List
  *
  * Author : cookiej
  * Date   : 2017/12/22
  * Time   : 10:09
  */
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import {
   FlatList,
   StyleSheet,
@@ -18,6 +18,56 @@ import {
 import PropTypes from 'prop-types';
 
 const {height: screenH} = Dimensions.get('window');
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingText: {
+    color: '#999',
+    fontSize: 15,
+    fontWeight: '100',
+    marginTop: 10,
+  },
+  emptyContainer: {
+    height: screenH - 64,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  footer: {
+    height: 44,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  footerText: {
+    color: '#333',
+    fontSize: 15,
+    fontWeight: '100',
+    marginLeft: 10,
+  },
+  refreshBtn: {
+    paddingHorizontal: 30,
+    paddingVertical: 10,
+    borderColor: '#ebebeb',
+    borderWidth: 1,
+    borderRadius: 4,
+  },
+  refreshText: {
+    color: '#999',
+    fontSize: 15,
+    fontWeight: '100',
+  },
+  defaultItem: {
+    height: 50,
+    paddingLeft: 16,
+    justifyContent: 'center',
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderColor: '#ebebeb',
+  },
+});
+
 const ListStatus = {
   'FirstLoad': 'FirstLoad',
   'Normal': 'Normal',
@@ -88,10 +138,10 @@ export default class LoadMoreList extends Component {
 
     return (
       <View style={styles.container}>
-        <ActivityIndicator/>
+        <ActivityIndicator />
         <Text style={styles.loadingText}>正在加载中...</Text>
       </View>
-    )
+    );
   };
 
   renderListEmptyComponent = () => {
@@ -119,7 +169,7 @@ export default class LoadMoreList extends Component {
 
     return (
       <View style={styles.footer}>
-        <ActivityIndicator/>
+        <ActivityIndicator />
         <Text style={styles.footerText}>正在加载更多数据…</Text>
       </View>
     );
@@ -161,7 +211,7 @@ export default class LoadMoreList extends Component {
           <Text style={styles.refreshText}>重新加载</Text>
         </TouchableOpacity>
       </View>
-    )
+    );
   };
 
   handleRefresh = () => {
@@ -200,53 +250,3 @@ export default class LoadMoreList extends Component {
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  loadingText: {
-    color: '#999',
-    fontSize: 15,
-    fontWeight: '100',
-    marginTop: 10,
-  },
-  emptyContainer: {
-    height: screenH - 64,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  footer: {
-    height: 44,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  footerText: {
-    color: '#333',
-    fontSize: 15,
-    fontWeight: '100',
-    marginLeft: 10,
-  },
-  refreshBtn: {
-    paddingHorizontal: 30,
-    paddingVertical: 10,
-    borderColor: '#ebebeb',
-    borderWidth: 1,
-    borderRadius: 4,
-  },
-  refreshText: {
-    color: '#999',
-    fontSize: 15,
-    fontWeight: '100',
-  },
-  defaultItem: {
-    height: 50,
-    paddingLeft: 16,
-    justifyContent: 'center',
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderColor: '#ebebeb',
-  }
-});

@@ -33,7 +33,7 @@ export default class Home extends Component<{}> {
     this.scrollListener = this.scrollOffsetY.addListener(({value}) => {
       // 透明度为1时才支持触发点击事件
       this.captureSearchAction = value >= 220 - 64;
-    })
+    });
   }
 
   componentDidMount() {
@@ -59,10 +59,16 @@ export default class Home extends Component<{}> {
    * @param {String} foodKind 分组名称
    * @param {Object} food 食物数据对象
    */
-  handlePressFood = (foodKind, food) => alert(JSON.stringify(food) + ':' + foodKind);
+  handlePressFood = (foodKind, food) => alert(`${JSON.stringify(food)} : ${foodKind}`);
 
   renderFoodGroupView = (foodGroup, index) => {
-    return <FoodGroupView key={`FoodGroup-${index}`} foodGroup={foodGroup} onPress={this.handlePressFood}/>
+    return (
+      <FoodGroupView
+        key={`FoodGroup-${index}`}
+        foodGroup={foodGroup}
+        onPress={this.handlePressFood}
+      />
+    );
   };
 
   render() {
@@ -71,8 +77,8 @@ export default class Home extends Component<{}> {
 
     return (
       <View style={styles.container}>
-        <AnimatedNavigationBar scrollOffsetY={this.scrollOffsetY} onPress={this.handleSearch}/>
-        <AnimatedHeaderImage scrollOffsetY={this.scrollOffsetY}/>
+        <AnimatedNavigationBar scrollOffsetY={this.scrollOffsetY} onPress={this.handleSearch} />
+        <AnimatedHeaderImage scrollOffsetY={this.scrollOffsetY} />
         <ScrollView
           removeClippedSubviews
           showsVerticalScrollIndicator={false}
@@ -85,11 +91,11 @@ export default class Home extends Component<{}> {
             searchAction={() => CJNavigation.push('search')}
             scrollValue={this.scrollOffsetY}
           />
-          <FoodHandleView handleAction={this.handlePressOption}/>
+          <FoodHandleView handleAction={this.handlePressOption} />
           {showContent && <View>{foodList.map(this.renderFoodGroupView)}</View>}
-          {isLoadError && <ReconnectView onPress={this.handleRefresh}/>}
+          {isLoadError && <ReconnectView onPress={this.handleRefresh} />}
         </ScrollView>
-        <Loading isShow={isLoading}/>
+        <Loading isShow={isLoading} />
       </View>
     );
   }
@@ -103,7 +109,7 @@ const AnimatedNavigationBar = ({scrollOffsetY, onPress}) => {
   });
   return (
     <Animated.View style={[styles.animatedNav, {opacity}]}>
-      <SearchInputView onPress={onPress} style={{height: 38}}/>
+      <SearchInputView onPress={onPress} style={{height: 38}} />
     </Animated.View>
   );
 };
@@ -112,15 +118,15 @@ const AnimatedHeaderImage = ({scrollOffsetY}) => {
   // 图片宽、高、位移动画插值
   const width = scrollOffsetY.interpolate({
     inputRange: [-100, -80, 0, 10],
-    outputRange: [Constant.screenW + 50, Constant.screenW, Constant.screenW, Constant.screenW]
+    outputRange: [Constant.screenW + 50, Constant.screenW, Constant.screenW, Constant.screenW],
   });
   const height = scrollOffsetY.interpolate({
     inputRange: [-30, 0, 10],
-    outputRange: [250, 220, 220]
+    outputRange: [250, 220, 220],
   });
   const translateX = scrollOffsetY.interpolate({
     inputRange: [-100, -80, 0, 10],
-    outputRange: [-25, 0, 0, 0]
+    outputRange: [-25, 0, 0, 0],
   });
   const translateY = scrollOffsetY.interpolate({
     inputRange: [-10, 0, 10],
@@ -132,7 +138,7 @@ const AnimatedHeaderImage = ({scrollOffsetY}) => {
       style={[styles.animatedBigImage, {width, height, transform: [{translateX}, {translateY}]}]}
       source={require('../../resource/img_home_bg.png')}
     />
-  )
+  );
 };
 
 const SearchInputView = ({onPress, style}) => {
@@ -160,7 +166,7 @@ const ReconnectView = ({onPress}) => {
     >
       <Text>网络出错，点击重试~</Text>
     </TouchableOpacity>
-  )
+  );
 };
 
 const HeaderView = ({searchAction}) => {
@@ -172,11 +178,11 @@ const HeaderView = ({searchAction}) => {
         resizeMode="contain"
       />
       <View style={{alignItems: 'center'}}>
-        <Text style={{color: 'white', marginBottom: 15, fontSize: 16, fontWeight: '100'}}>查 询 食 物 信 息</Text>
-        <SearchInputView onPress={searchAction}/>
+        <Text style={styles.searchPrompt}>查 询 食 物 信 息</Text>
+        <SearchInputView onPress={searchAction} />
       </View>
     </View>
-  )
+  );
 };
 
 const FoodHandleView = ({handleAction}) => {
@@ -187,20 +193,20 @@ const FoodHandleView = ({handleAction}) => {
         imageName={require('../../resource/ic_home_analyse.png')}
         onPress={() => handleAction('饮食分析')}
       />
-      <View style={styles.line}/>
+      <View style={styles.line} />
       <HandleItem
         title="搜索对比"
         imageName={require('../../resource/ic_search_compare.png')}
         onPress={() => handleAction('搜索对比')}
       />
-      <View style={styles.line}/>
+      <View style={styles.line} />
       <HandleItem
         title="扫码对比"
         imageName={require('../../resource/ic_scan_compare.png')}
         onPress={() => handleAction('扫码对比')}
       />
     </View>
-  )
+  );
 };
 
 const HandleItem = ({imageName, title, onPress}) => {
@@ -210,10 +216,10 @@ const HandleItem = ({imageName, title, onPress}) => {
       style={styles.handelItem}
       onPress={onPress}
     >
-      <Image style={{width: 28, height: 28}} source={imageName}/>
+      <Image style={{width: 28, height: 28}} source={imageName} />
       <Text style={{fontSize: 13, color: '#999', fontWeight: '100'}}>{title}</Text>
     </TouchableOpacity>
-  )
+  );
 };
 
 const FoodGroupView = ({foodGroup, onPress}) => {
@@ -252,9 +258,9 @@ const FoodGroupView = ({foodGroup, onPress}) => {
               />
               <Text style={styles.categoryTitle}>{Group.name}</Text>
             </TouchableOpacity>
-          )
+          );
         })}
       </View>
     </View>
-  )
+  );
 };

@@ -10,7 +10,7 @@ import Constant from '../../../common/constants';
 
 export default StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
   },
   headerContainer: {
     height: 220,
@@ -36,7 +36,7 @@ export default StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: 4,
     alignItems: 'center',
-    flexDirection: 'row'
+    flexDirection: 'row',
   },
   foodHandleContainer: {
     height: 60,
@@ -55,18 +55,18 @@ export default StyleSheet.create({
     height: 60,
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingVertical: 5
+    paddingVertical: 5,
   },
   line: {
     height: 50,
     width: 0.5,
-    backgroundColor: '#d9d9d9'
+    backgroundColor: '#d9d9d9',
   },
   categoryContainer: {
     backgroundColor: 'white',
     flexDirection: 'row',
     flexWrap: 'wrap',
-    width: Constant.screenW - 16 * 2
+    width: Constant.screenW - 16 * 2,
   },
   groupHeader: {
     height: 40,
@@ -100,5 +100,11 @@ export default StyleSheet.create({
     top: 0,
     left: 0,
     right: 0,
+  },
+  searchPrompt: {
+    color: 'white',
+    marginBottom: 15,
+    fontSize: 16,
+    fontWeight: '100',
   },
 });

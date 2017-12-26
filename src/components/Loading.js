@@ -5,7 +5,7 @@
  * Date   : 2017/12/21
  * Time   : 10:42
  */
-import React, {PureComponent} from 'react';
+import React, { PureComponent } from 'react';
 import {
   StyleSheet,
   View,
@@ -13,29 +13,6 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import PropTypes from 'prop-types';
-
-export default class Loading extends PureComponent {
-  static propTypes = {
-    isShow: PropTypes.bool,
-  };
-
-  static defaultProps = {
-    isShow: false,
-  };
-
-  render() {
-    if (!this.props.isShow) return null;
-
-    return (
-      <View style={styles.container}>
-        <View style={styles.loading}>
-          <ActivityIndicator color="white"/>
-          <Text style={styles.loadingTitle}>加载中……</Text>
-        </View>
-      </View>
-    );
-  }
-}
 
 const styles = StyleSheet.create({
   container: {
@@ -61,3 +38,26 @@ const styles = StyleSheet.create({
     color: 'white',
   },
 });
+
+export default class Loading extends PureComponent {
+  static propTypes = {
+    isShow: PropTypes.bool,
+  };
+
+  static defaultProps = {
+    isShow: false,
+  };
+
+  render() {
+    if (!this.props.isShow) return null;
+
+    return (
+      <View style={styles.container}>
+        <View style={styles.loading}>
+          <ActivityIndicator color="white" />
+          <Text style={styles.loadingTitle}>加载中……</Text>
+        </View>
+      </View>
+    );
+  }
+}

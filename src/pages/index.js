@@ -5,11 +5,11 @@
  * Description : TabBarView
  */
 import React, {PureComponent} from 'react';
+import ScrollableTabView from 'react-native-scrollable-tab-view';
 import Feed from './feed';
-import Home from './home'
-import Mine from './mine'
-import TabBar from '../components/TabBar'
-import ScrollableTabView from 'react-native-scrollable-tab-view'
+import Home from './home';
+import Mine from './mine';
+import TabBar from '../components/TabBar';
 
 const tabTitles = ['食物百科', '逛吃', '我的'];
 const tabIcons = [
@@ -31,7 +31,7 @@ export default class TabBarView extends PureComponent {
         tabIconNames={tabIcons}
         selectedTabIconNames={tabSelectedIcon}
       />
-    )
+    );
   };
 
   render() {
@@ -40,11 +40,11 @@ export default class TabBarView extends PureComponent {
         locked
         scrollWithoutAnimation
         renderTabBar={this.renderTabBar}
-        tabBarPosition='bottom'
+        tabBarPosition="bottom"
       >
-        <Home tabLabel="Home" {...this.props}/>
-        <Feed tabLabel="Feed" {...this.props}/>
-        <Mine tabLabel="Mine" {...this.props}/>
+        <Home tabLabel="Home" {...this.props} />
+        <Feed tabLabel="Feed" {...this.props} />
+        <Mine tabLabel="Mine" {...this.props} />
       </ScrollableTabView>
     );
   }

@@ -5,7 +5,10 @@
  * Date   : 2017/12/20
  * Time   : 17:25
  */
-import {NativeModules} from 'react-native';
+import {
+  NativeModules,
+} from 'react-native';
+
 const { CJNavigation } = NativeModules;
 
 class Module {

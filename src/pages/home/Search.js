@@ -27,7 +27,7 @@ export default class Search extends Component<{}> {
     this.searchModel = SearchModel.setup();
     this.state = {
       keyword: '',
-    }
+    };
   }
 
   handleBack = () => CJNavigation.pop();
@@ -37,7 +37,7 @@ export default class Search extends Component<{}> {
     if (keyword.length > 0) {
       this.setState({keyword: ''});
     } else {
-      alert('scan')
+      alert('scan');
     }
   };
 
@@ -61,7 +61,7 @@ export default class Search extends Component<{}> {
           activeOpacity={0.8}
           onPress={this.handleScanOrClear}
         >
-          <Image style={styles.scanIcon} source={icon}/>
+          <Image style={styles.scanIcon} source={icon} />
         </TouchableOpacity>
       </View>
     );
@@ -88,7 +88,7 @@ export default class Search extends Component<{}> {
 
     return (
       <View>
-        <SectionCell title="大家都在搜"/>
+        <SectionCell title="大家都在搜" />
         <View style={styles.hotKeywordWrapper}>
           {hotKeywords.map((keywordArr, index) => {
             const isLastCell = index === hotKeywords.length - 1;
@@ -123,7 +123,7 @@ export default class Search extends Component<{}> {
 
     return (
       <View>
-        <SectionCell title="最近搜过"/>
+        <SectionCell title="最近搜过" />
         <View style={styles.hotKeywordWrapper}>
           {historyKeywords.map((keyword, index) => {
             return (
@@ -133,7 +133,7 @@ export default class Search extends Component<{}> {
                 style={styles.historyKeyword}
                 onPress={() => this.handleSearchKeyword(keyword)}
               >
-                <Image style={styles.clockIcon} source={require('../../resource/ic_search_history.png')}/>
+                <Image style={styles.clockIcon} source={require('../../resource/ic_search_history.png')} />
                 <View style={styles.historyKeywordInner}>
                   <Text style={{fontSize: 16, color: '#333', fontWeight: '100'}}>{keyword}</Text>
                   <Image
@@ -150,7 +150,7 @@ export default class Search extends Component<{}> {
             style={styles.clearBtn}
             onPress={this.handleClearHistory}
           >
-            <Image style={styles.clearIcon} source={require('../../resource/ic_trash.png')}/>
+            <Image style={styles.clearIcon} source={require('../../resource/ic_trash.png')} />
             <Text style={{fontSize: 14, color: '#999', fontWeight: '100'}}>清空历史记录</Text>
           </TouchableOpacity>
         </View>
@@ -171,7 +171,7 @@ export default class Search extends Component<{}> {
           {this.renderHotKeywordView()}
         </ScrollView>
       </View>
-    )
+    );
   }
 }
 
@@ -180,5 +180,5 @@ const SectionCell = ({title}) => {
     <View style={styles.section}>
       <Text style={styles.sectionTitle}>{title}</Text>
     </View>
-  )
+  );
 };

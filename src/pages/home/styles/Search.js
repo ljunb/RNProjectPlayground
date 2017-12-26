@@ -10,7 +10,7 @@ import Constant from '../../../common/constants';
 
 export default StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
   },
   textInputWrapper: {
     width: Constant.screenW - 44 - 28,
@@ -23,7 +23,7 @@ export default StyleSheet.create({
     backgroundColor: '#f5f5f5',
     paddingLeft: 5,
   },
-  textInput:  {
+  textInput: {
     width: Constant.screenW - 60 * 2,
     height: 30,
   },
@@ -57,7 +57,7 @@ export default StyleSheet.create({
     height: 36,
     paddingTop: 16,
     paddingLeft: 16,
-    backgroundColor: '#f5f5f5'
+    backgroundColor: '#f5f5f5',
   },
   keywordItem: {
     height: 44,
@@ -99,5 +99,5 @@ export default StyleSheet.create({
     height: 26,
     width: 26,
     marginRight: 3,
-  }
+  },
 });

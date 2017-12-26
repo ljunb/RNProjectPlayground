@@ -1,49 +1,12 @@
-import React, {Component} from 'react'
+import React, {Component} from 'react';
 import {
   StyleSheet,
   View,
   Text,
   TouchableOpacity,
   Image,
-} from 'react-native'
+} from 'react-native';
 import PropTypes from 'prop-types';
-
-export default class TabBar extends Component {
-  static propType = {
-    goToPage: PropTypes.func,
-    activeTab: PropTypes.number,
-    tabs: PropTypes.array,
-
-    tabNames: PropTypes.array,
-    tabIconNames: PropTypes.array
-  };
-
-  render() {
-    const {activeTab, selectedTabIconNames, tabIconNames, tabNames, goToPage} = this.props;
-
-    return (
-      <View style={[styles.tabs, {borderTopWidth: StyleSheet.hairlineWidth}]}>
-        {this.props.tabs.map((tab, i) => {
-          let color = activeTab === i ? 'red' : 'gray';
-          let icon = activeTab === i ? selectedTabIconNames[i] : tabIconNames[i];
-          return (
-            <TouchableOpacity
-              key={`TabBarItem_${i}`}
-              activeOpacity={1}
-              style={styles.tab}
-              onPress={() => goToPage && goToPage(i)}
-            >
-              <View style={styles.tabItem}>
-                <Image style={styles.icon} source={icon}/>
-                <Text style={{color: color, fontSize: 12}}>{tabNames[i]}</Text>
-              </View>
-            </TouchableOpacity>
-          )
-        })}
-      </View>
-    );
-  }
-}
 
 const styles = StyleSheet.create({
   tabs: {
@@ -67,3 +30,42 @@ const styles = StyleSheet.create({
     marginBottom: 2,
   },
 });
+
+export default class TabBar extends Component {
+  static propType = {
+    goToPage: PropTypes.func,
+    activeTab: PropTypes.number,
+    tabs: PropTypes.array,
+
+    tabNames: PropTypes.array,
+    tabIconNames: PropTypes.array,
+  };
+
+  render() {
+    const {
+      activeTab, selectedTabIconNames, tabIconNames, tabNames, goToPage,
+    } = this.props;
+
+    return (
+      <View style={[styles.tabs, {borderTopWidth: StyleSheet.hairlineWidth}]}>
+        {this.props.tabs.map((tab, i) => {
+          const color = activeTab === i ? 'red' : 'gray';
+          const icon = activeTab === i ? selectedTabIconNames[i] : tabIconNames[i];
+          return (
+            <TouchableOpacity
+              key={`TabBarItem_${tabNames[i]}`}
+              activeOpacity={1}
+              style={styles.tab}
+              onPress={() => goToPage && goToPage(i)}
+            >
+              <View style={styles.tabItem}>
+                <Image style={styles.icon} source={icon} />
+                <Text style={{color, fontSize: 12}}>{tabNames[i]}</Text>
+              </View>
+            </TouchableOpacity>
+          );
+        })}
+      </View>
+    );
+  }
+}
