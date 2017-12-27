@@ -41,6 +41,7 @@ export default class TabBarView extends PureComponent {
         scrollWithoutAnimation
         renderTabBar={this.renderTabBar}
         tabBarPosition="bottom"
+        prerenderingSiblingsNumber={2}
       >
         <Home tabLabel="Home" {...this.props} />
         <Feed tabLabel="Feed" {...this.props} />
