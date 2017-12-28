@@ -11,4 +11,6 @@ export default {
   'search': require('./pages/home/Search'),
   'feed': require('./pages/feed'),
   'mine': require('./pages/mine'),
+
+  'demo/decorator': require('./pages/demos/NewGuidePage'),
 };
