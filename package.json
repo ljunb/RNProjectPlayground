@@ -15,7 +15,8 @@
     "prop-types": "^15.6.0",
     "react": "16.0.0",
     "react-native": "0.51.0",
-    "react-native-scrollable-tab-view": "^0.8.0"
+    "react-native-scrollable-tab-view": "^0.8.0",
+    "rn-beginner-guidance-decorator": "^1.0.0"
   },
   "devDependencies": {
     "babel-eslint": "^8.1.2",

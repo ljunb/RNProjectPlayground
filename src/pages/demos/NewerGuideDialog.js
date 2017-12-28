@@ -9,27 +9,26 @@ import React, {Component} from 'react';
 import {
   StyleSheet,
   View,
-  TouchableOpacity,
+  Text,
 } from 'react-native';
 import PropTypes from 'prop-types';
 
 const styles = StyleSheet.create({
   root: {
-    position: 'absolute',
-    top: 0,
-    right: 0,
-    bottom: 0,
-    left: 0,
-  },
-  title_bar_bg: {
     flex: 1,
     backgroundColor: '#000000B3',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  text: {
+    backgroundColor: '#fff',
+    paddingHorizontal: 16,
+    paddingVertical: 5,
   },
 });
 
 export default class NewerGuideDialog extends Component {
   static propTypes = {
-    show: PropTypes.bool,
     onDismiss: PropTypes.func,
   };
 
@@ -43,16 +42,10 @@ export default class NewerGuideDialog extends Component {
   };
 
   render() {
-    if (!this.props.show) return null;
-
     return (
-      <TouchableOpacity
-        activeOpacity={1}
-        style={styles.root}
-        onPress={this.handleDismiss}
-      >
-        <View style={styles.title_bar_bg} />
-      </TouchableOpacity>
+      <View style={styles.root}>
+        <Text style={styles.text} onPress={this.handleDismiss}>Dismiss</Text>
+      </View>
     );
   }
 }

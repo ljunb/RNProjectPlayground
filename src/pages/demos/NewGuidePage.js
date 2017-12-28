@@ -7,7 +7,7 @@
  */
 import React, { Component } from 'react';
 import { View, Text } from 'react-native';
-import { injectGuide } from '../../decorators/NewGuideDecorator';
+import { injectGuidance } from 'rn-beginner-guidance-decorator';
 import NewerGuideDialog from './NewerGuideDialog';
 
 const NewGuidePage = () => {
@@ -18,9 +18,9 @@ const NewGuidePage = () => {
   );
 };
 
-export default injectGuide(NewerGuideDialog, 'NewGuidePage')(NewGuidePage);
+export default injectGuidance(NewerGuideDialog, {displayName: 'NewGuidePage2'})(NewGuidePage);
 
-// @injectGuide(NewerGuideDialog, 'NewGuidePage')
+// @injectGuidance(NewerGuideDialog, {displayName: 'NewGuidePage'})
 // class NewGuidePage extends Component {
 //   render() {
 //     return (
