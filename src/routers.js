@@ -13,4 +13,5 @@ export default {
   'mine': require('./pages/mine'),
 
   'demo/decorator': require('./pages/demos/NewGuidePage'),
+  'demo/gallery': require('./pages/demos/gallery'),
 };

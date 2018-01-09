@@ -16,9 +16,12 @@ import {
 } from 'react-native';
 import {observer} from 'mobx-react/native';
 import styles from './styles/Mine';
+import CJNavigation from '../../bridges/CJNavigation';
 
 @observer
 export default class Profile extends Component {
+
+  handleLogin = () => CJNavigation.push('demo/gallery');
 
   render() {
     const cellStyle = {
@@ -28,7 +31,7 @@ export default class Profile extends Component {
 
     return (
       <View style={{flex: 1, backgroundColor: '#f5f5f5'}}>
-        <HeaderView />
+        <HeaderView loginAction={this.handleLogin} />
         <View style={[styles.cellContainer, cellStyle]}>
           <ProfileStaticCell
             title="我的照片"
