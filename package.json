@@ -15,6 +15,7 @@
     "prop-types": "^15.6.0",
     "react": "16.0.0",
     "react-native": "0.51.0",
+    "react-native-image-pan-zoom": "^2.0.16",
     "react-native-scrollable-tab-view": "^0.8.0",
     "react-native-smart-pull-to-refresh-listview": "git+https://github.com/ljunb/react-native-smart-pull-to-refresh-listview.git",
     "rn-beginner-guidance-decorator": "^1.0.0"

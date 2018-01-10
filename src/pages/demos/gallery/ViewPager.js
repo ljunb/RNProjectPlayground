@@ -5,7 +5,7 @@
  * Date   : 2018/1/9
  * Time   : 09:46
  */
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import {
   View,
   StyleSheet,
@@ -16,6 +16,7 @@ import {
   StatusBar,
   Easing,
 } from 'react-native';
+import ZoomView from 'react-native-image-pan-zoom';
 
 const {width: screenW, height: screenH} = Dimensions.get('window');
 const barHeight = StatusBar.currentHeight || 0;
@@ -45,6 +46,7 @@ export default class ImageViewPager extends Component {
     this.originImageRefs = originImageRefs;
 
     this.setState({operateIndex, show: true, origin}, () => {
+      // TODO：此行代码Android端是无效的
       this.scrollView && this.scrollView.scrollTo({x: operateIndex * screenW, animated: false});
     });
   };
@@ -57,7 +59,7 @@ export default class ImageViewPager extends Component {
     const operateOriginRef = this.originImageRefs[operateIndex];
     operateOriginRef && operateOriginRef.measure((ox, oy, width, height, px, py) => {
       this.setState({
-        origin: { px, py, width, height },
+        origin: {px, py, width, height},
       }, () => {
         const operateAnimatedRef = this.animatedImageRefs[operateIndex];
         operateAnimatedRef && operateAnimatedRef.close(this.hideViewPager);
@@ -93,7 +95,7 @@ export default class ImageViewPager extends Component {
                 ref={r => this.animatedImageRefs[index] = r}
                 key={`ScrollImage_${index}`}
                 animated={operateIndex === index}
-                source={{uri: image}}
+                image={image}
                 origin={this.state.origin}
                 onPress={this.close}
               />
@@ -107,28 +109,40 @@ export default class ImageViewPager extends Component {
 
 class AnimatedImage extends Component {
   animatedValue = new Animated.Value(0);
+  animating = true;
 
   componentDidMount() {
     Animated.timing(this.animatedValue, {
       toValue: 1,
       duration: 300,
       easing: Easing.linear,
-    }).start();
+    }).start(() => this.animating = false);
   }
 
   close = callback => {
+    this.animating = true;
     Animated.timing(this.animatedValue, {
       toValue: 0,
       duration: 300,
       easing: Easing.linear,
-    }).start(callback);
+    }).start(() => {
+      this.animating = false;
+      callback && callback();
+    });
+  };
+
+  handlePress = () => {
+    if (this.animating) return;
+    this.props.onPress && this.props.onPress();
   };
 
   render() {
-    const {origin} = this.props;
+    const {origin, image} = this.props;
+    const newHeight = screenH * image.height / image.width;
+
     const top = this.animatedValue.interpolate({
       inputRange: [0, 1],
-      outputRange: [origin.py, (screenH - barHeight - 300) / 2],
+      outputRange: [origin.py, (screenH - barHeight - newHeight) / 2],
     });
     const left = this.animatedValue.interpolate({
       inputRange: [0, 1],
@@ -140,20 +154,24 @@ class AnimatedImage extends Component {
     });
     const height = this.animatedValue.interpolate({
       inputRange: [0, 1],
-      outputRange: [origin.height, 300],
+      outputRange: [origin.height, newHeight],
     });
 
     return (
-      <TouchableOpacity
-        activeOpacity={1}
-        style={{height: screenH - barHeight, width: screenW}}
-        onPress={this.props.onPress}
+      <ZoomView
+        cropWidth={screenW}
+        cropHeight={screenH}
+        imageWidth={screenW}
+        imageHeight={screenH}
+        onClick={this.handlePress}
       >
         <Animated.Image
-          style={{ height, width, left, top }}
-          source={this.props.source}
+          style={{height, width, left, top}}
+          source={{uri: this.props.image.source}}
+          resizeMode="contain"
         />
-      </TouchableOpacity>
+      </ZoomView>
+
     );
   }
 }

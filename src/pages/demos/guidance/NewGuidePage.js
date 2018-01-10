@@ -18,7 +18,7 @@ const NewGuidePage = () => {
   );
 };
 
-export default injectGuidance(NewerGuideDialog, {displayName: 'NewGuidePage2'})(NewGuidePage);
+export default injectGuidance(NewerGuideDialog, {displayName: 'NewGuidePage'})(NewGuidePage);
 
 // @injectGuidance(NewerGuideDialog, {displayName: 'NewGuidePage'})
 // class NewGuidePage extends Component {

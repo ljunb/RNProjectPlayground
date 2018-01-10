@@ -12,6 +12,6 @@ export default {
   'feed': require('./pages/feed'),
   'mine': require('./pages/mine'),
 
-  'demo/decorator': require('./pages/demos/NewGuidePage'),
+  'demo/decorator': require('./pages/demos/guidance/NewGuidePage'),
   'demo/gallery': require('./pages/demos/gallery'),
 };
