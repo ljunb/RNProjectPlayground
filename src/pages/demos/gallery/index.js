@@ -11,19 +11,19 @@ import {
   TouchableOpacity,
   Image,
 } from 'react-native';
-import ImageViewPager from './ViewPager';
+import ImageViewPager from './ViewPager.gallery';
 
 export default class Gallery extends Component {
   imageList = [
-    {source: 'http://www.quanjing.com/image/2017index/lx3.png', width: 237, height: 435},
-    {source: 'http://p2.wmpic.me/article/2017/04/05/1491360811_KGDMrHbN_215x185.jpg', width: 215, height: 185},
-    {source: 'http://www.vstou.com/img/201503/jkjk,m.jpg', width: 433, height: 370},
-    {source: 'http://img06.tooopen.com/images/20160728/tooopen_sy_173005496826.jpg', width: 720, height: 764},
-    {source: 'http://p2.wmpic.me/article/2017/04/05/1491360811_KGDMrHbN_215x185.jpg', width: 215, height: 185},
-    {source: 'http://www.vstou.com/img/201503/jkjk,m.jpg', width: 433, height: 370},
-    {source: 'http://www.quanjing.com/image/2017index/lx3.png', width: 237, height: 435},
-    {source: 'http://p2.wmpic.me/article/2017/04/05/1491360811_KGDMrHbN_215x185.jpg', width: 215, height: 185},
-    {source: 'http://www.vstou.com/img/201503/jkjk,m.jpg', width: 433, height: 370},
+    {url: 'http://www.quanjing.com/image/2017index/lx3.png', width: 237, height: 435},
+    {url: 'http://p2.wmpic.me/article/2017/04/05/1491360811_KGDMrHbN_215x185.jpg', width: 215, height: 185},
+    {url: 'http://www.vstou.com/img/201503/jkjk,m.jpg', width: 433, height: 370},
+    {url: 'http://img06.tooopen.com/images/20160728/tooopen_sy_173005496826.jpg', width: 720, height: 764},
+    {url: 'http://p2.wmpic.me/article/2017/04/05/1491360811_KGDMrHbN_215x185.jpg', width: 215, height: 185},
+    {url: 'http://www.vstou.com/img/201503/jkjk,m.jpg', width: 433, height: 370},
+    {url: 'http://www.quanjing.com/image/2017index/lx3.png', width: 237, height: 435},
+    {url: 'http://p2.wmpic.me/article/2017/04/05/1491360811_KGDMrHbN_215x185.jpg', width: 215, height: 185},
+    {url: 'http://www.vstou.com/img/201503/jkjk,m.jpg', width: 433, height: 370},
   ];
   imageRefs = [];
 
@@ -48,7 +48,7 @@ export default class Gallery extends Component {
                 activeOpacity={1}
                 onPress={() => this.handlePress(index)}
               >
-                <Image style={{height: 100, width: 100}} source={{uri: image.source}} />
+                <Image style={{height: 100, width: 100}} source={{uri: image.url}} />
               </TouchableOpacity>
             );
           })}

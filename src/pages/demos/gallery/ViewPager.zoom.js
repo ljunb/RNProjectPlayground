@@ -17,6 +17,7 @@ import {
   Easing,
 } from 'react-native';
 import ZoomView from 'react-native-image-pan-zoom';
+import ImageViewer from 'react-native-image-zoom-viewer';
 
 const {width: screenW, height: screenH} = Dimensions.get('window');
 const barHeight = StatusBar.currentHeight || 0;
@@ -82,26 +83,9 @@ export default class ImageViewPager extends Component {
 
     return (
       <View style={[StyleSheet.absoluteFill]}>
-        <ScrollView
-          horizontal
-          pagingEnabled
-          ref={r => this.scrollView = r}
-          style={{flex: 1}}
-          onMomentumScrollEnd={this.handleScrollEnd}
-        >
-          {imageList.map((image, index) => {
-            return (
-              <AnimatedImage
-                ref={r => this.animatedImageRefs[index] = r}
-                key={`ScrollImage_${index}`}
-                animated={operateIndex === index}
-                image={image}
-                origin={this.state.origin}
-                onPress={this.close}
-              />
-            );
-          })}
-        </ScrollView>
+        <ImageViewer
+          imageUrls={this.props.imageList}
+        />
       </View>
     );
   }
@@ -166,7 +150,7 @@ class AnimatedImage extends Component {
       >
         <Animated.Image
           style={{height, width, left, top}}
-          source={{uri: this.props.image.url}}
+          source={{uri: this.props.image.source}}
           resizeMode="contain"
         />
       </ZoomView>
