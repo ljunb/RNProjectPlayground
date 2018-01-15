@@ -13,7 +13,8 @@ import {
   Dimensions,
   StatusBar,
 } from 'react-native';
-import Gallery from 'react-native-gallery';
+import Gallery from 'react-native-image-gallery';
+import Pagination from './Pagination';
 
 const {width: screenW, height: screenH} = Dimensions.get('window');
 const barHeight = StatusBar.currentHeight || 0;
@@ -76,7 +77,6 @@ export default class ImageViewPager extends Component {
     if (!this.state.show) return null;
     const {imageList} = this.props;
     const {operateIndex, origin} = this.state;
-    const newImageList = imageList.map(item => item.url);
 
     const image = imageList[operateIndex];
     const newHeight = screenH * image.height / image.width;
@@ -102,22 +102,25 @@ export default class ImageViewPager extends Component {
       outputRange: [0, screenH],
     });
 
+    const showImageList = imageList.map(item => ({source: {uri: item.source}}));
+
     return (
       <View style={[StyleSheet.absoluteFill]}>
-          <Gallery
-            style={{flex: 1, backgroundColor: 'black'}}
-            images={newImageList}
-            initialPage={operateIndex}
-            onSingleTapConfirmed={this.close}
-            onPageSelected={index => this.setState({operateIndex: index})}
-          />
+        <Gallery
+          style={{flex: 1, backgroundColor: 'black'}}
+          images={showImageList}
+          initialPage={operateIndex}
+          onSingleTapConfirmed={this.close}
+          onPageSelected={index => this.setState({operateIndex: index})}
+        />
         <Animated.View style={[StyleSheet.absoluteFill, {backgroundColor: 'black', transform: [{translateY}]}]}>
           <Animated.Image
             style={{height, width, left, top}}
-            source={{uri: image.url}}
+            source={{uri: image.source}}
             resizeMode="contain"
           />
         </Animated.View>
+        <Pagination selectedPage={operateIndex} pageCount={showImageList.length} />
       </View>
     );
   }
