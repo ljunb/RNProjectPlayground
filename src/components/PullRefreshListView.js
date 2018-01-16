@@ -229,16 +229,16 @@ export default class PullRefreshListView extends Component {
     if (this.isLoadingMore) return;
 
     this.isLoadingMore = true;
-    const {status} = this.state;
+    const {status, isNoData} = this.state;
     const {onLoadMore} = this.props;
     // 网络失败时，先设置回加载中，触发回调
     if (status === ListStatus.NetworkError) {
       this.setState({status: ListStatus.Normal}, () => onLoadMore && onLoadMore());
-    } else if (status === ListStatus.Normal) {
-      onLoadMore && onLoadMore();
-    } else if (status === ListStatus.NoMoreData) {
+    } else if (status === ListStatus.NoMoreData || isNoData) {
       // BugFix：首页就加载完毕时，拉到底部显示没有更多，此时无法进行下拉刷新，需要手动调用一次endLoadMore
       this.listView && this.listView.endLoadMore(true);
+    } else if (status === ListStatus.Normal) {
+      onLoadMore && onLoadMore();
     }
   };
 
