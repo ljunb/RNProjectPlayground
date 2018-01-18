@@ -15,4 +15,5 @@ export default {
   'demo/decorator': require('./pages/demos/guidance/NewGuidePage'),
   'demo/gallery': require('./pages/demos/gallery'),
   'demo/ts': require('./pages/demos/ts'),
+  'demos/gesture/progress': require('./pages/demos/gesture/progress'),
 };
