@@ -9,17 +9,20 @@ import ScrollableTabView from 'react-native-scrollable-tab-view';
 import Feed from './feed';
 import Home from './home';
 import Mine from './mine';
+import Demo from './demos';
 import TabBar from '../components/TabBar';
 
-const tabTitles = ['食物百科', '逛吃', '我的'];
+const tabTitles = ['食物百科', '逛吃', '我的', 'Demos'];
 const tabIcons = [
   require('../resource/ic_tab_search.png'),
   require('../resource/ic_tab_homepage.png'),
+  require('../resource/ic_tab_my.png'),
   require('../resource/ic_tab_my.png'),
 ];
 const tabSelectedIcon = [
   require('../resource/ic_tab_search_select.png'),
   require('../resource/ic_tab_homepage_select.png'),
+  require('../resource/ic_tab_my_select.png'),
   require('../resource/ic_tab_my_select.png'),
 ];
 
@@ -46,6 +49,7 @@ export default class TabBarView extends PureComponent {
         <Home tabLabel="Home" {...this.props} />
         <Feed tabLabel="Feed" {...this.props} />
         <Mine tabLabel="Mine" {...this.props} />
+        <Demo tabLabel="Demo" />
       </ScrollableTabView>
     );
   }

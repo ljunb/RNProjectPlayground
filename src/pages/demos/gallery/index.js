@@ -10,8 +10,8 @@ import {
   View,
   TouchableOpacity,
   Image,
-  TextInput,
 } from 'react-native';
+import FastImage from 'react-native-fast-image';
 import ImageViewPager from './ViewPager.gallery';
 
 export default class Gallery extends Component {
@@ -49,7 +49,7 @@ export default class Gallery extends Component {
                 activeOpacity={1}
                 onPress={() => this.handlePress(index)}
               >
-                <Image style={{height: 100, width: 100}} source={{uri: image.source}} />
+                <FastImage style={{height: 100, width: 100}} source={{uri: image.source}} />
               </TouchableOpacity>
             );
           })}

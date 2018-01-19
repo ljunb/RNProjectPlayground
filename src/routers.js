@@ -12,8 +12,8 @@ export default {
   'feed': require('./pages/feed'),
   'mine': require('./pages/mine'),
 
-  'demo/decorator': require('./pages/demos/guidance/NewGuidePage'),
-  'demo/gallery': require('./pages/demos/gallery'),
-  'demo/ts': require('./pages/demos/ts'),
-  'demos/gesture/progress': require('./pages/demos/gesture/progress'),
+  'demos/guidance': require('./pages/demos/guidance/NewGuidePage'),
+  'demos/gallery': require('./pages/demos/gallery'),
+  'demos/ts': require('./pages/demos/ts'),
+  'demos/gesture': require('./pages/demos/gesture'),
 };

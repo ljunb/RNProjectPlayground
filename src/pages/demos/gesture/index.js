@@ -13,6 +13,7 @@ import {
   Animated,
   Dimensions,
 } from 'react-native';
+import ProgressBar from './progress';
 
 const {width: screenW, height: screenH} = Dimensions.get('window');
 const ButtonWH = 80;
@@ -102,6 +103,9 @@ export default class App extends PureComponent {
           {...this.panResponder.panHandlers}
           style={[styles.square, {transform}]}
         />
+        <View style={{marginTop: 50, alignSelf: 'center'}}>
+          <ProgressBar />
+        </View>
       </View>
     );
   }

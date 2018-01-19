@@ -11,7 +11,7 @@ import CJNavigation from '../../bridges/CJNavigation';
 export default () => {
   return (
     <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-      <Text onPress={() => CJNavigation.push('demo/decorator')}>Feed</Text>
+      <Text>Feed</Text>
     </View>
   );
 };

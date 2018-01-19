@@ -3852,7 +3852,7 @@ promise@^7.1.1:
   dependencies:
     asap "~2.0.3"
 
-prop-types@^15.5.8, prop-types@^15.6.0:
+prop-types@^15.5.10, prop-types@^15.5.8, prop-types@^15.6.0:
   version "15.6.0"
   resolved "https://registry.npmjs.org/prop-types/-/prop-types-15.6.0.tgz#ceaf083022fc46b4a35f69e13ef75aed0d639856"
   dependencies:
@@ -3941,6 +3941,12 @@ react-mixin@^3.0.5:
   dependencies:
     object-assign "^4.0.1"
     smart-mixin "^2.0.0"
+
+react-native-fast-image@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.npmjs.org/react-native-fast-image/-/react-native-fast-image-2.0.1.tgz#210fe23a8ed5ae4a68977b555167eb7440ad7374"
+  dependencies:
+    prop-types "^15.5.10"
 
 react-native-image-gallery@^2.1.4:
   version "2.1.5"

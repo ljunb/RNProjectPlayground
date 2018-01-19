@@ -13,11 +13,13 @@ import {
   Dimensions,
   StatusBar,
 } from 'react-native';
+import FastImage from 'react-native-fast-image';
 import Gallery from 'react-native-image-gallery';
 import Pagination from './Pagination';
 
 const {width: screenW, height: screenH} = Dimensions.get('window');
 const barHeight = StatusBar.currentHeight || 0;
+const AnimatedFastImage = Animated.createAnimatedComponent(FastImage);
 
 export default class ImageViewPager extends Component {
   state = {
@@ -114,7 +116,7 @@ export default class ImageViewPager extends Component {
           onPageSelected={index => this.setState({operateIndex: index})}
         />
         <Animated.View style={[StyleSheet.absoluteFill, {backgroundColor: 'black', transform: [{translateY}]}]}>
-          <Animated.Image
+          <AnimatedFastImage
             style={{height, width, left, top}}
             source={{uri: image.source}}
             resizeMode="contain"
