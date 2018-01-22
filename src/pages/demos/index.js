@@ -14,6 +14,7 @@ export default class Demo extends PureComponent {
     {title: 'decorator实现新手引导页注入', path: 'guidance'},
     {title: '类朋友圈查看图片', path: 'gallery'},
     {title: '手势相关', path: 'gesture'},
+    {title: '浮动文本效果的输入框', path: 'animation'},
   ];
 
   renderDemoItem = (demo, index) => {
