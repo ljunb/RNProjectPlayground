@@ -222,7 +222,6 @@ export default class PullRefreshListView extends Component {
    * 刷新中
    */
   handleRefresh = () => {
-    if (this.isRefreshing) return;
     this.isRefreshing = true;
 
     const {onRefresh} = this.props;
