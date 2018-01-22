@@ -103,6 +103,12 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: '#999',
   },
+  animatedCircle: {
+    height: 20,
+    width: 20,
+    borderRadius: 10,
+    backgroundColor: 'rgba(1,1,1,0.3)',
+  },
 });
 
 export const viewType = {
@@ -128,7 +134,6 @@ export default class PullRefreshListView extends Component {
     renderEmptyComponent: PropTypes.func,
     onRefresh: PropTypes.func.isRequired,
     onLoadMore: PropTypes.func.isRequired,
-    onPressReload: PropTypes.func.isRequired,
     onSetError: PropTypes.func,
   };
 
@@ -174,6 +179,7 @@ export default class PullRefreshListView extends Component {
       // 空数据，显示一个cell，用来显示空列表视图
       this.setState({
         dataSource: this.state.dataSource.cloneWithRows([0]),
+        status: ListStatus.Normal,
         isNoData: true,
       });
     } else {
@@ -216,6 +222,7 @@ export default class PullRefreshListView extends Component {
    * 刷新中
    */
   handleRefresh = () => {
+    if (this.isRefreshing) return;
     this.isRefreshing = true;
 
     const {onRefresh} = this.props;
@@ -394,13 +401,6 @@ class AnimatedCircle extends Component {
       inputRange: [0, 1],
       outputRange: ['0deg', '360000deg'],
     });
-    return (
-      <Animated.View
-        style={[
-          {height: 20, width: 20, borderRadius: 10, backgroundColor: 'rgba(1,1,1,0.3)'},
-          {transform: [{rotateY}]},
-        ]}
-      />
-    );
+    return <Animated.View style={[styles.animatedCircle, {transform: [{rotateY}]}]} />;
   }
 }

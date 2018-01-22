@@ -61,6 +61,7 @@ module.exports = {
     "guard-for-in": "off",
     "max-len": ["error", 120],
     "import/prefer-default-export": "off",
+    "import/no-unresolved": "off",
   }
 };
 // see more detail https://github.com/Kennytian/learning-react-native/blob/master/environment/react-native-eslint.md
