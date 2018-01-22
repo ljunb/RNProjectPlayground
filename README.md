@@ -6,10 +6,10 @@
 
 ## 开发相关
 ### 1、关于导航
-`CJNavigation` 是封装原生 `UINavigationController` 的一个桥接模块，提供常见的导航入栈、出栈功能。每个 React Native 页面，都是通过新建 `RNPayloadViewController` 实例来加载不同 `RCTRootView` 实现的，并添加一个 `pageName` 作为页面标识。
+[CJNavigation](https://github.com/ljunb/RNProjectPlayground/blob/master/src/bridges/CJNavigation.js) 是封装原生 `UINavigationController` 的一个桥接模块，提供常见的导航入栈、出栈功能。每个 React Native 页面，都是通过新建 [RNPayloadViewController](https://github.com/ljunb/RNProjectPlayground/blob/master/ios/RNPayloadViewController.m) 实例来加载不同 `RCTRootView` 实现的，并添加一个 `pageName` 作为页面标识。
 
 ### 2、关于页面
-每新建一个页面，都需要在`routers.js`中配置：
+每新建一个页面，都需要在 [routers](https://github.com/ljunb/RNProjectPlayground/blob/master/src/routers.js) 中配置：
 ```
 // routers.js
 
@@ -27,12 +27,11 @@ export default {
 ![demo](https://github.com/ljunb/screenshots/blob/master/gallery.gif)
 
 * [guidance](https://github.com/ljunb/RNProjectPlayground/blob/master/src/pages/demos/guidance/NewGuidePage.js) 
-是 `Decorator` 的简易应用，主要是实现一个快速为 React Native App 添加新手引导遮盖的需求，方便快捷易使用，[相应组件地址](https://github.com/ljunb/rn-beginner-guidance-decorator)。
+是 `Decorator` 的简易应用，主要是实现一个快速为 React Native App 添加新手引导遮盖的需求，方便快捷易使用，[相应组件地址](https://github.com/ljunb/rn-beginner-guidance-decorator)。
 
 ### 4、关于组件
 * [PullRefreshListView](https://github.com/ljunb/RNProjectPlayground/blob/master/src/components/PullRefreshListView.js)
-是对 [react-native-smart-pull-to-refresh-listview](https://github
-.com/react-native-component/react-native-smart-pull-to-refresh-listview) 
+是对 [react-native-smart-pull-to-refresh-listview](https://github.com/react-native-component/react-native-smart-pull-to-refresh-listview) 
 的二次封装，可自定义下拉刷新、上拖加载更多的样式，也添加了空列表、数据加载出错时（分有数据和无数据）的样式定制，更适用于商业项目使用。简单使用示例：
 ```javascript
 
