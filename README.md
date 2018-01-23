@@ -29,6 +29,12 @@ export default {
 * [guidance](https://github.com/ljunb/RNProjectPlayground/blob/master/src/pages/demos/guidance/NewGuidePage.js) 
 是 `Decorator` 的简易应用，主要是实现一个快速为 React Native App 添加新手引导遮盖的需求，方便快捷易使用，[相应组件地址](https://github.com/ljunb/rn-beginner-guidance-decorator)。
 
+* [animation/textinput](https://github.com/ljunb/RNProjectPlayground/blob/master/src/pages/demos/animation/textinput.js) 是 `placeholder` 有浮动动画效果的输入框，实现思路也很简单，如果网上的组件不满足业务需求，也完全可以自己来实现。运行示例：
+![demo](https://github.com/ljunb/screenshots/blob/master/floating.gif)
+
+* [animation/path](https://github.com/ljunb/RNProjectPlayground/blob/master/src/pages/demos/animation/path.js) 是仿 Path 的菜单动画效果，有空再继续完善吧：
+![demo](https://github.com/ljunb/screenshots/blob/master/path.gif)
+
 ### 4、关于组件
 * [PullRefreshListView](https://github.com/ljunb/RNProjectPlayground/blob/master/src/components/PullRefreshListView.js)
 是对 [react-native-smart-pull-to-refresh-listview](https://github.com/react-native-component/react-native-smart-pull-to-refresh-listview) 

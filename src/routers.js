@@ -16,5 +16,6 @@ export default {
   'demos/gallery': require('./pages/demos/gallery'),
   'demos/ts': require('./pages/demos/ts'),
   'demos/gesture': require('./pages/demos/gesture'),
-  'demos/animation': require('./pages/demos/animation'),
+  'demos/animation/floating': require('./pages/demos/animation'),
+  'demos/animation/path': require('./pages/demos/animation/path'),
 };
