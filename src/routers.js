@@ -18,4 +18,5 @@ export default {
   'demos/gesture': require('./pages/demos/gesture'),
   'demos/animation/floating': require('./pages/demos/animation'),
   'demos/animation/path': require('./pages/demos/animation/path'),
+  'demos/animation/headking': require('./pages/demos/animation/headking'),
 };
