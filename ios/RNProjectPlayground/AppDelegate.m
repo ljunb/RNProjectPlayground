@@ -19,7 +19,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-  RNPayloadViewController *rootVC = [[RNPayloadViewController alloc] initWithPageName:@"main_tab"
+  RNPayloadViewController *rootVC = [[RNPayloadViewController alloc] initWithPageName:@"demos/animation/headking"
                                                                                params:nil];
   UINavigationController *unv = [[UINavigationController alloc] initWithRootViewController:rootVC];
   unv.navigationBarHidden = YES;

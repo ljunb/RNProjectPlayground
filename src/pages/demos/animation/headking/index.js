@@ -7,9 +7,9 @@ import {
   StyleSheet,
   Text,
   Animated,
-  TouchableOpacity,
   Easing,
 } from 'react-native';
+import Common from '../../../../common/constants';
 
 const OutCircleRadius = 90;
 const InnerCircleRadius = 60;
@@ -67,13 +67,28 @@ const styles = StyleSheet.create({
     height: 5,
     width: 5,
     backgroundColor: 'red',
-  }
-})
+  },
+});
 
 export default class HeadKing extends Component {
 
+  state = {
+    isMatchSuccess: false,
+  };
   rotateValue = new Animated.Value(0);
+  coinValue = new Animated.Value(0);
+  value = 0;
 
+  componentWillMount() {
+    this.rotateValue.addListener(({value}) => {
+      if (value >= 6 * 1000) {
+        this.rotateValue.stopAnimation();
+        this.setState({isMatchSuccess: true}, this.startCoinAnimation);
+      } else {
+        this.value = value;
+      }
+    });
+  }
 
   componentDidMount() {
     this.startMatching();
@@ -81,30 +96,50 @@ export default class HeadKing extends Component {
 
   startMatching = () => {
     Animated.timing(this.rotateValue, {
-      toValue: 1,
-      duration: 5 * 1000,
+      toValue: 10 * 4 * 1000,
+      duration: 10 * 4 * 1000,
       easing: Easing.linear,
-    }).start(this.repeatAnimation);
+    }).start();
   };
 
-  repeatAnimation = () => {
-    this.rotateValue.setValue(0);
-    this.startMatching();
+  startCoinAnimation = () => {
+    Animated.timing(this.coinValue, {
+      toValue: 1,
+      duration: 300,
+      easing: Easing.linear,
+    }).start();
   };
 
-  render() {
-    const outRotate = this.rotateValue.interpolate({
+  renderMatchSuccess = () => {
+    const scale = this.coinValue.interpolate({
+      inputRange: [0, 1],
+      outputRange: [0, 1],
+    });
+    const rotate = this.coinValue.interpolate({
       inputRange: [0, 1],
       outputRange: ['0deg', '360deg'],
     });
-    const innerRotate = this.rotateValue.interpolate({
-      inputRange: [0, 1],
-      outputRange: ['360deg', '0deg'],
+
+    return (
+      <View style={{flex: 1, paddingVertical: 80, justifyContent: 'space-between'}}>
+        <LeftPlayer />
+        <Animated.Text style={{transform: [{rotate}, {scale}], alignSelf: 'center'}}>胜者赢取17个金币</Animated.Text>
+        <RightPlayer />
+      </View>
+    );
+  };
+
+  render() {
+    if (this.state.isMatchSuccess) return this.renderMatchSuccess();
+
+    const outRotate = this.rotateValue.interpolate({
+      inputRange: [0, 10 * 4 * 1000],
+      outputRange: ['0deg', `${360 * 10}deg`],
     });
-    const innerScale = this.rotateValue.interpolate({
-      inputRange: [0, 0.2, 1],
-      outputRange: [0, 1, 1,]
-    })
+    const innerRotate = this.rotateValue.interpolate({
+      inputRange: [0, 10 * 4 * 1000],
+      outputRange: [`${360 * 10}deg`, '0deg'],
+    });
 
     return (
       <View style={styles.root}>
@@ -112,12 +147,91 @@ export default class HeadKing extends Component {
           <Animated.View style={[styles.outCircle, {transform: [{rotate: outRotate}]}]}>
             <View style={styles.outIndicator} />
           </Animated.View>
-          <Animated.View style={[styles.innerCircle, {transform: [{rotate: innerRotate}, {scale: innerScale}]}]}>
+          <Animated.View style={[styles.innerCircle, {transform: [{rotate: innerRotate}]}]}>
             <View style={styles.innerIndicator} />
           </Animated.View>
           <View style={styles.avatar} />
         </View>
+        <Text>匹配中……</Text>
       </View>
+    );
+  }
+}
+
+class LeftPlayer extends Component {
+
+  animatedValue = new Animated.Value(0);
+  scaleValue = new Animated.Value(0);
+
+  componentDidMount() {
+    this.startAnimation();
+  }
+
+  startAnimation = () => {
+    Animated.sequence([
+      Animated.timing(this.animatedValue, {
+        toValue: 1,
+        duration: 200,
+        easing: Easing.linear,
+      }),
+      Animated.spring(this.scaleValue, {
+        toValue: 1,
+        duration: 100,
+      }),
+    ]).start();
+  };
+
+  render() {
+    const translateX = this.animatedValue.interpolate({
+      inputRange: [0, 1],
+      outputRange: [-150, 50],
+    });
+    const scale = this.scaleValue;
+
+    return (
+      <Animated.View style={{transform: [{translateX}], alignItems: 'center', width: 150}} >
+        <View style={{backgroundColor: 'red', height: 100, width: 100, borderRadius: 50}} />
+        <Animated.Text style={{transform: [{scale}], marginTop: 10}}>广州 奥迪</Animated.Text>
+      </Animated.View>
+    );
+  }
+}
+
+class RightPlayer extends Component {
+
+  animatedValue = new Animated.Value(0);
+  scaleValue = new Animated.Value(0);
+
+  componentDidMount() {
+    this.startAnimation();
+  }
+
+  startAnimation = () => {
+    Animated.sequence([
+      Animated.timing(this.animatedValue, {
+        toValue: 1,
+        duration: 200,
+        easing: Easing.linear,
+      }),
+      Animated.spring(this.scaleValue, {
+        toValue: 1,
+        duration: 100,
+      }),
+    ]).start();
+  };
+
+  render() {
+    const translateX = this.animatedValue.interpolate({
+      inputRange: [0, 1],
+      outputRange: [Common.screenW + 150, Common.screenW - 150 - 50],
+    });
+    const scale = this.scaleValue;
+
+    return (
+      <Animated.View style={{transform: [{translateX}], alignItems: 'center', width: 150}} >
+        <View style={{backgroundColor: 'red', height: 100, width: 100, borderRadius: 50}} />
+        <Animated.Text style={{transform: [{scale}], marginTop: 10}}>厦门 奔驰</Animated.Text>
+      </Animated.View>
     );
   }
 }

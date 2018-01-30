@@ -19,4 +19,6 @@ export default {
   'demos/animation/floating': require('./pages/demos/animation'),
   'demos/animation/path': require('./pages/demos/animation/path'),
   'demos/animation/headking': require('./pages/demos/animation/headking'),
+  'demos/animation/headking/gaming': require('./pages/demos/animation/headking/gaming'),
+  'test': require('./pages/demos/animation/headking'),
 };
