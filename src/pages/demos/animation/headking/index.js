@@ -1,7 +1,7 @@
 /**
  * 仿头脑王者游戏效果
  */
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import {
   View,
   StyleSheet,
@@ -10,6 +10,8 @@ import {
   Easing,
 } from 'react-native';
 import Common from '../../../../common/constants';
+import CJNavigation from '../../../../bridges/CJNavigation';
+import Gaming from './gaming';
 
 const OutCircleRadius = 90;
 const InnerCircleRadius = 60;
@@ -49,8 +51,8 @@ const styles = StyleSheet.create({
     width: InnerCircleRadius * 2,
     borderRadius: InnerCircleRadius,
     position: 'absolute',
-    top: (200 - InnerCircleRadius*2) / 2,
-    left: (200 - InnerCircleRadius*2) / 2,
+    top: (200 - InnerCircleRadius * 2) / 2,
+    left: (200 - InnerCircleRadius * 2) / 2,
   },
   outIndicator: {
     position: 'absolute',
@@ -74,6 +76,7 @@ export default class HeadKing extends Component {
 
   state = {
     isMatchSuccess: false,
+    isGaming: false,
   };
   rotateValue = new Animated.Value(0);
   coinValue = new Animated.Value(0);
@@ -81,7 +84,8 @@ export default class HeadKing extends Component {
 
   componentWillMount() {
     this.rotateValue.addListener(({value}) => {
-      if (value >= 6 * 1000) {
+      const second = 3 + Math.random();
+      if (value >= second * 1000) {
         this.rotateValue.stopAnimation();
         this.setState({isMatchSuccess: true}, this.startCoinAnimation);
       } else {
@@ -107,7 +111,11 @@ export default class HeadKing extends Component {
       toValue: 1,
       duration: 300,
       easing: Easing.linear,
-    }).start();
+    }).start(() => {
+      // 进入答题页
+      // setTimeout(() => CJNavigation.push('demos/animation/headking/gaming'), 2000);
+      setTimeout(() => this.setState({isGaming: true}), 2000);
+    });
   };
 
   renderMatchSuccess = () => {
@@ -130,6 +138,7 @@ export default class HeadKing extends Component {
   };
 
   render() {
+    if (this.state.isGaming) return <Gaming />;
     if (this.state.isMatchSuccess) return this.renderMatchSuccess();
 
     const outRotate = this.rotateValue.interpolate({
@@ -145,12 +154,12 @@ export default class HeadKing extends Component {
       <View style={styles.root}>
         <View style={styles.content}>
           <Animated.View style={[styles.outCircle, {transform: [{rotate: outRotate}]}]}>
-            <View style={styles.outIndicator} />
+            <View style={styles.outIndicator}/>
           </Animated.View>
           <Animated.View style={[styles.innerCircle, {transform: [{rotate: innerRotate}]}]}>
-            <View style={styles.innerIndicator} />
+            <View style={styles.innerIndicator}/>
           </Animated.View>
-          <View style={styles.avatar} />
+          <View style={styles.avatar}/>
         </View>
         <Text>匹配中……</Text>
       </View>
@@ -189,8 +198,8 @@ class LeftPlayer extends Component {
     const scale = this.scaleValue;
 
     return (
-      <Animated.View style={{transform: [{translateX}], alignItems: 'center', width: 150}} >
-        <View style={{backgroundColor: 'red', height: 100, width: 100, borderRadius: 50}} />
+      <Animated.View style={{transform: [{translateX}], alignItems: 'center', width: 150}}>
+        <View style={{backgroundColor: 'red', height: 100, width: 100, borderRadius: 50}}/>
         <Animated.Text style={{transform: [{scale}], marginTop: 10}}>广州 奥迪</Animated.Text>
       </Animated.View>
     );
@@ -228,8 +237,8 @@ class RightPlayer extends Component {
     const scale = this.scaleValue;
 
     return (
-      <Animated.View style={{transform: [{translateX}], alignItems: 'center', width: 150}} >
-        <View style={{backgroundColor: 'red', height: 100, width: 100, borderRadius: 50}} />
+      <Animated.View style={{transform: [{translateX}], alignItems: 'center', width: 150}}>
+        <View style={{backgroundColor: 'red', height: 100, width: 100, borderRadius: 50}}/>
         <Animated.Text style={{transform: [{scale}], marginTop: 10}}>厦门 奔驰</Animated.Text>
       </Animated.View>
     );

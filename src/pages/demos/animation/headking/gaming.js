@@ -1,134 +1,201 @@
 /**
  * 仿头脑王者游戏效果，答题中
  */
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import {
   View,
   StyleSheet,
   Text,
   Animated,
-  Easing,
 } from 'react-native';
-import CJNavigation from '../../../../bridges/CJNavigation';
+import {AnimatedCircularProgress} from 'react-native-circular-progress';
+import Common from '../../../../common/constants';
+import AnswerCell from './AnswerCell';
 
-const OutCircleRadius = 90;
-const InnerCircleRadius = 60;
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
-    alignItems: 'center',
-    justifyContent: 'center',
   },
-  content: {
+  playerWrapper: {
+    height: 180,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-around',
+    backgroundColor: '#f5f5f5',
+  },
+  player: {
     justifyContent: 'center',
     alignItems: 'center',
-    height: 200,
-    width: 200,
   },
   avatar: {
-    height: 40,
-    width: 40,
-    borderRadius: 20,
+    height: 70,
+    width: 70,
+    borderRadius: 35,
     backgroundColor: 'red',
-    position: 'absolute',
-    left: 80,
-    top: 80,
+    marginBottom: 15,
   },
-  outCircle: {
-    borderColor: 'red',
-    borderWidth: 1,
-    height: OutCircleRadius * 2,
-    width: OutCircleRadius * 2,
-    borderRadius: OutCircleRadius,
+  coinWrapper: {
+    height: 30,
+    width: 96,
+    borderRadius: 48,
+    borderWidth: StyleSheet.hairlineWidth,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 12,
   },
-  innerCircle: {
-    borderColor: 'red',
-    borderWidth: 1,
-    height: InnerCircleRadius * 2,
-    width: InnerCircleRadius * 2,
-    borderRadius: InnerCircleRadius,
-    position: 'absolute',
-    top: (200 - InnerCircleRadius*2) / 2,
-    left: (200 - InnerCircleRadius*2) / 2,
+  pkWrapper: {
+    alignItems: 'center',
   },
-  outIndicator: {
+  answer: {
+    height: 440,
+    width: Common.screenW - 16 * 2,
+    marginLeft: 16,
+  },
+  countdown: {
     position: 'absolute',
+    height: 80,
+    width: 80,
+    borderRadius: 40,
+    borderWidth: StyleSheet.hairlineWidth,
     top: 0,
-    left: OutCircleRadius,
-    height: 5,
-    width: 5,
-    backgroundColor: 'red',
+    left: (Common.screenW - 16 * 2 - 80) / 2,
+    backgroundColor: '#fff',
   },
-  innerIndicator: {
-    position: 'absolute',
-    top: 0,
-    left: InnerCircleRadius,
-    height: 5,
-    width: 5,
-    backgroundColor: 'red',
+  answerContent: {
+    marginTop: 40,
+    height: 400,
+    width: Common.screenW - 16 * 2,
+    borderWidth: StyleSheet.hairlineWidth,
+    paddingTop: 40,
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingBottom: 40,
+  },
+  question: {
+    fontSize: 16,
+    color: '#333',
+    marginTop: 10,
+    marginBottom: 40,
   },
 });
 
-export default class HeadKing extends Component {
+export default class Gaming extends Component {
 
-  rotateValue = new Animated.Value(0);
-  shouldStop = false;
-  value = 0;
-
-  componentWillMount() {
-    this.rotateValue.addListener(({value}) => {
-      if (value >= 6 * 1000) {
-        this.rotateValue.stopAnimation();
-      } else {
-        this.value = value;
-      }
-      console.log(value);
-    });
-  }
+  translateYValue = new Animated.Value(0);
+  answerPosValue = new Animated.Value(0);
+  fill = 0;
+  question = {
+    title: '转子发动机是由哪个汽车品牌发明的？',
+    options: ['丰田', '马自达', '本田', '名爵'],
+    answer: '马自达',
+  };
+  answerCellRef = [];
+  leftAnswer = '';
+  rightAnswer = '';
 
   componentDidMount() {
-    this.startMatching();
+    this.startShowPlayers();
   }
 
-  startMatching = () => {
-    Animated.timing(this.rotateValue, {
-      toValue: 10 * 4 * 1000,
-      duration: 10 * 4 * 1000,
-      easing: Easing.linear,
-    }).start();
+  startShowPlayers = () => {
+    Animated.parallel([
+      Animated.timing(this.translateYValue, {
+        toValue: 1,
+        duration: 300,
+        delay: 500,
+      }),
+      Animated.spring(this.answerPosValue, {
+        toValue: 1,
+        duration: 3000,
+        friction: 6,
+        delay: 600,
+      }),
+    ]).start(() => {
+      setTimeout(() => this.progress && this.progress.performLinearAnimation(100, 10 * 1000), 1000);
+    });
   };
 
-  repeatAnimation = () => {
-    this.rotateValue.setValue(0);
-    this.startMatching();
+  handlePressAnswer = ({title, index}) => {
+    const {answer: correctAnswer} = this.question;
+    // todo
+    this.answerCellRef[index] && this.answerCellRef[index].performAnswerResultAnimation();
+  };
+
+  renderChildren = fill => {
+    this.fill = fill;
+    return (
+      <Text style={{transform: [{rotate: '90deg'}]}}>
+        { 10 - parseInt(fill / 10) }
+      </Text>
+    );
+  };
+
+  renderAnswerCell = (answer, index) => {
+    return (
+      <AnswerCell
+        ref={r => this.answerCellRef[index] = r}
+        key={`AnswerCell_${index}`}
+        title={answer}
+        index={index}
+        onPress={this.handlePressAnswer}
+      />
+    );
   };
 
   render() {
-    const outRotate = this.rotateValue.interpolate({
-      inputRange: [0, 10 * 4 * 1000],
-      outputRange: ['0deg', `${360 * 10}deg`],
+    const {title, options} = this.question;
+    const translateY = this.translateYValue.interpolate({
+      inputRange: [0, 1],
+      outputRange: [-180, 64],
     });
-    const innerRotate = this.rotateValue.interpolate({
-      inputRange: [0, 10 * 4 * 1000],
-      outputRange: [`${360 * 10}deg`, '0deg'],
+    const answerPos = this.answerPosValue.interpolate({
+      inputRange: [0, 1],
+      outputRange: [Common.screenH - 180, 20],
     });
-    // const innerScale = this.rotateValue.interpolate({
-    //   inputRange: [0, 0.2, 1],
-    //   outputRange: [0, 1, 1,]
-    // })
 
     return (
       <View style={styles.root}>
-        <View style={styles.content}>
-          <Animated.View style={[styles.outCircle, {transform: [{rotate: outRotate}]}]}>
-            <View style={styles.outIndicator} />
-          </Animated.View>
-          <Animated.View style={[styles.innerCircle, {transform: [{rotate: innerRotate}]}]}>
-            <View style={styles.innerIndicator} />
-          </Animated.View>
-          <View style={styles.avatar} />
-        </View>
+        <Animated.View style={[styles.playerWrapper, {transform: [{translateY}]}]}>
+          <View style={styles.player}>
+            <View style={styles.avatar}/>
+            <Text>广州 奥迪</Text>
+            <View style={styles.coinWrapper}>
+              <Text>180</Text>
+            </View>
+          </View>
+          <View style={styles.pkWrapper}>
+            <Text>PK</Text>
+            <View style={styles.coinWrapper}>
+              <Text>汽车知识</Text>
+            </View>
+          </View>
+          <View style={styles.player}>
+            <View style={styles.avatar}/>
+            <Text>广州 奥迪</Text>
+            <View style={styles.coinWrapper}>
+              <Text>180</Text>
+            </View>
+          </View>
+        </Animated.View>
+        <Animated.View style={[styles.answer, {transform: [{translateY: answerPos}]}]}>
+          <View style={styles.answerContent}>
+            <Text style={styles.question}>{title}</Text>
+            {options.map(this.renderAnswerCell)}
+          </View>
+          <View style={[styles.countdown, {transform: [{rotate: '-90deg'}]}]}>
+            <AnimatedCircularProgress
+              style={{backgroundColor: 'transparent', marginLeft: -1, marginTop: -1}}
+              ref={r => this.progress = r}
+              size={81}
+              width={4}
+              fill={0}
+              tintColor="red"
+              backgroundColor="#ccc"
+            >
+              {this.renderChildren}
+            </AnimatedCircularProgress>
+          </View>
+        </Animated.View>
       </View>
     );
   }
