@@ -8,6 +8,7 @@ export default class extends Component {
     return (
       <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
         <PasswordInput
+          containerHeight={55}
           onSubmit={password => console.log(password)}
         />
       </View>

@@ -11,20 +11,21 @@ import PropTypes from 'prop-types';
 
 const InputItemWH = 50;
 const SecurityDotWH = 10;
+const BorderColor = '#ccc';
+
 const styles = StyleSheet.create({
   root: {
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: BorderColor,
   },
   password: {
     flexDirection: 'row',
-    height: InputItemWH,
     alignItems: 'center',
   },
   pwdItem: {
     height: InputItemWH,
     width: InputItemWH,
-    borderRightColor: '#ccc',
+    borderRightColor: BorderColor,
     borderRightWidth: 1,
     justifyContent: 'center',
     alignItems: 'center',
@@ -58,11 +59,22 @@ const styles = StyleSheet.create({
 export default class extends Component {
   static propTypes = {
     maxLength: PropTypes.number,
+    autoSubmit: PropTypes.bool,
+    containerHeight: PropTypes.number,
+    itemWidth: PropTypes.number,
+    dotRadius: PropTypes.number,
+    borderColor: PropTypes.string,
+    onChangeText: PropTypes.func,
     onSubmit: PropTypes.func,
   };
 
   static defaultProps = {
     maxLength: 6,
+    autoSubmit: true,
+    containerHeight: InputItemWH,
+    itemWidth: InputItemWH,
+    dotRadius: SecurityDotWH / 2,
+    borderColor: BorderColor,
   };
 
   constructor(props) {
@@ -79,18 +91,33 @@ export default class extends Component {
     this.textInput && this.textInput.focus();
   }
 
+  get passwordItemStyle() {
+    const { containerHeight: height, itemWidth: width, borderColor } = this.props;
+    return [styles.pwdItem, { height, width, borderRightColor: borderColor }];
+  }
+
+  get securityDotStyle() {
+    const { dotRadius: borderRadius } = this.props;
+    return [styles.dot, { height: borderRadius * 2, width: borderRadius * 2, borderRadius }];
+  }
+
+  get animatingBoxStyle() {
+    const { containerHeight: height, itemWidth: width } = this.props;
+    return [styles.animatingBox, { height, width }];
+  }
+
   renderPasswordItem = (item, index) => {
     const isLastItem = parseInt(index) === this.state.passwordArray.length - 1;
     const passwordItem = this.state.password[index];
 
     return (
       <TouchableOpacity
-        style={[styles.pwdItem, isLastItem && {borderRightWidth: 0}]}
+        style={[this.passwordItemStyle, isLastItem && {borderRightWidth: 0}]}
         key={`PwdItem_${index}`}
         activeOpacity={1}
         onPress={this.handlePressItem}
       >
-        {passwordItem >= 0 && <View style={styles.dot}/>}
+        {passwordItem >= 0 && <View style={this.securityDotStyle} />}
       </TouchableOpacity>
     );
   };
@@ -98,9 +125,10 @@ export default class extends Component {
   handlePressItem = () => this.textInput && this.textInput.focus();
 
   handleChange = password => {
-    const { maxLength, onSubmit } = this.props;
+    const { maxLength, onSubmit, autoSubmit, onChangeText } = this.props;
+    const { password: oldPassword } = this.state;
 
-    if (this.state.password.length === maxLength && password.length === maxLength - 1) {
+    if (oldPassword.length === maxLength && password.length === maxLength - 1) {
       this.positionValue.setValue(maxLength - 1);
       this.setState({
         password,
@@ -116,23 +144,27 @@ export default class extends Component {
           duration: 100,
         }).start();
       });
-    }
-    if (password.length === maxLength) {
-      onSubmit && onSubmit(password);
-      Keyboard.dismiss();
+
+      // `onSubmit` will never invoke while `autoSubmit` config to false, use `onChangeText`
+      // to handle input logic instead
+      if (password.length === maxLength && autoSubmit) {
+        onSubmit && onSubmit(password);
+        Keyboard.dismiss();
+      }
+      onChangeText && onChangeText(password);
     }
   };
 
   render() {
     const { password, hasSubmited } = this.state;
-    const { maxLength } = this.props;
+    const { maxLength, itemWidth, borderColor } = this.props;
     const left = this.positionValue.interpolate({
       inputRange: [0, maxLength],
-      outputRange: [0, InputItemWH * maxLength],
+      outputRange: [0, itemWidth * maxLength],
     });
 
     return (
-      <View style={styles.root}>
+      <View style={[styles.root, { borderColor }]}>
         <TextInput
           ref={r => this.textInput = r}
           style={styles.textInput}
@@ -143,7 +175,7 @@ export default class extends Component {
         <View style={styles.password}>
           {this.state.passwordArray.map(this.renderPasswordItem)}
         </View>
-        {!hasSubmited && <Animated.View style={[styles.animatingBox, {left}]}/>}
+        {!hasSubmited && <Animated.View style={[this.animatingBoxStyle, { left }]}/>}
       </View>
     );
   }
