@@ -151,8 +151,8 @@ export default class extends Component {
         onSubmit && onSubmit(password);
         Keyboard.dismiss();
       }
-      onChangeText && onChangeText(password);
     }
+    onChangeText && onChangeText(password);
   };
 
   render() {

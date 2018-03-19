@@ -37,7 +37,9 @@ export default {
 
 ![demo](https://github.com/ljunb/screenshots/blob/master/path.gif)
 
-* [animation/pay](https://github.com/ljunb/RNProjectPlayground/blob/master/src/pages/demos/pay/PasswordInput.js) 是与支付宝类似的密码输入框，后续再补充演示GIF。
+* [animation/pay](https://github.com/ljunb/RNProjectPlayground/blob/master/src/pages/demos/pay/PasswordInput.js) 是与支付宝类似的密码输入框：
+
+![demo](https://github.com/ljunb/screenshots/blob/master/password_input.gif)
 
 ### 4、关于组件
 * [PullRefreshListView](https://github.com/ljunb/RNProjectPlayground/blob/master/src/components/PullRefreshListView.js)
