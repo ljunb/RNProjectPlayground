@@ -3,6 +3,7 @@
 > * 采用原生 `UINavigationController` 实现导航功能：push、pop、popTo、popToRoot
 > * React Native 实现UI和主要业务逻辑
 > * 采用 MobX 和 MST 组织数据
+> * 其他一些尝试实例
 
 ## 开发相关
 ### 1、关于导航
@@ -116,7 +117,7 @@ export default class MsgList extends Component {
 #### 5.1、概览
 罗列的代码酌情省略不必要内容：
 
-```
+```javascript
 import DefaultLoading from './CommonLoading'
 import DefaultNetError from './CommonNetError'
 
@@ -173,7 +174,7 @@ export default (WrapperComponent, LoadingComponent, NetErrorComponent) => class 
 * 目标组件 `WrapperComponent` 接收 `data` 作为 `props`，传递界面渲染所需数据
 
 #### 5.2、使用方式
-```
+```javascript
 import FetchDecorator from './FetchDecorator'
 import TargetList from './TargetList'
 
