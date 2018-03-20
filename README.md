@@ -105,3 +105,103 @@ export default class MsgList extends Component {
   }
 }
 ```
+
+### 5、关于 HOC 应用
+基本上，每个页面都会存在首屏渲染和网络出错的占位图，大部分情况下，我们会发现其中的实现逻辑大同小异，所以看到这些页面，自己经常觉得代码很冗余，一直想着有没一些优化的方法。
+
+较早之前写过一个关于新手引导的[组件](https://github.com/ljunb/rn-beginner-guidance-decorator)，是对 HOC 的简单应用，大抵是抽取公用的代码逻辑做为上一层的封装，新手引导内容则由具体组件去负责。基于这种思路，尝试对网络请求的通用业务需求做一次解耦简化，期望是通过一次编写 HOC ，然后不再涉及首屏渲染，或是网络出错这些状态处理的编写逻辑，并支持动态配置不同的占位组件。
+
+于是，有了这个[初始版](https://github.com/ljunb/RNProjectPlayground/blob/master/src/pages/demos/decorators/index.js) 。
+
+#### 5.1、概览
+罗列的代码酌情省略不必要内容：
+
+```
+import DefaultLoading from './CommonLoading'
+import DefaultNetError from './CommonNetError'
+
+export default (WrapperComponent, LoadingComponent, NetErrorComponent) => class extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      isLoading: true,
+      isLoadError: false,
+      data: null,
+    }
+  }
+
+  componentDidMount() {
+    this.fetchData()
+  }
+
+  fetchData = () => {
+    setTimeout(() => {
+      this.setState({
+        isLoading: false,
+        data: [0, 1, 2, 3, 4]
+      })
+    }, 1500)
+  }
+
+  handleReload = () => this.setState({isLoading: true, isLoadError: false}, this.fetchData)
+
+  render() {
+    const { style, ...rest } = this.props
+    const { isLoadError, isLoading, data } = this.state
+    const isShowContent = !isLoading && !isLoadError
+    const ShowedLoading = LoadingComponent || DefaultLoading
+    const ShowedNetError = NetErrorComponent || DefaultNetError
+
+    return (
+      <View style={[styles.root, style]}>
+        {isLoading && <ShowedLoading />}
+        {isLoadError && <ShowedNetError onReload={this.handleReload} />}
+        {isShowContent &&
+          <WrapperComponent
+            {...rest}
+            data={data}
+          />
+        }
+      </View>
+    )
+  }
+} 
+```
+简单解释为：
+* HOC 负责 `isLoading`、`isLoadError` 的管理，完成不同占位图的渲染
+* `LoadingComponent`、`NetErrorComponent` 用于配置占位组件，如果没有传入，则设置为默认的占位图，体现通用性和可配置性
+* 目标组件 `WrapperComponent` 接收 `data` 作为 `props`，传递界面渲染所需数据
+
+#### 5.2、使用方式
+```
+import FetchDecorator from './FetchDecorator'
+import TargetList from './TargetList'
+
+const CustomerLoading = () => {
+  return (
+    <Text>Customer Loading...</Text>
+  )
+}
+
+const FinalList = FetchDecorator(TargetList, CustomerLoading)
+
+export default class extends PureComponent {
+  render() {
+    return (
+      <View style={styles.root}>
+        <FinalList />
+      </View>
+    )
+  }
+}
+```
+
+#### 5.3、其他思考
+* 列表下拉刷新、加载更多支持？
+
+> 为 `WrapperComponent` 增加 `enableRefresh`、`enableLoadMore` 的 `props`，来开启或忽略这些功能。但是页码的参数名？page？亦或pageNo？
+* 界面非纯展示，需编辑触发重新渲染？
+
+> 同理，提供 `onFetch` 作为 `props` 来进行重新请求，需确认更详尽的页面渲染方案。
+
+* 其他暂未想到

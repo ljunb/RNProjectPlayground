@@ -15,7 +15,7 @@ const styles = StyleSheet.create({
   }
 })
 
-const decorator = (WrapperComponent, LoadingComponent, NetErrorComponent) => class extends Component {
+export default (WrapperComponent, LoadingComponent, NetErrorComponent) => class extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -69,6 +69,4 @@ const decorator = (WrapperComponent, LoadingComponent, NetErrorComponent) => cla
       </View>
     )
   }
-} 
-
-export default decorator
+}
