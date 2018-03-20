@@ -11,11 +11,13 @@ import CJNavigation from '../../bridges/CJNavigation';
 
 export default class Demo extends PureComponent {
   demos = [
-    {title: 'decorator实现新手引导页注入', path: 'guidance'},
+    {title: 'Decorator实现新手引导页注入', path: 'guidance'},
     {title: '类朋友圈查看图片', path: 'gallery'},
     {title: '手势相关', path: 'gesture'},
     {title: '浮动文本效果的输入框', path: 'animation/floating'},
     {title: '仿Path菜单动画', path: 'animation/path'},
+    {title: '仿支付宝密码输入框', path: 'pay'},
+    {title: 'Decorator实现通用loading、error配置', path: 'decorators'},
   ];
 
   renderDemoItem = (demo, index) => {

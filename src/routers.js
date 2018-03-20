@@ -21,5 +21,6 @@ export default {
   'demos/animation/headking': require('./pages/demos/animation/headking'),
   'demos/animation/headking/gaming': require('./pages/demos/animation/headking/gaming'),
   'test': require('./pages/demos/animation/headking'),
-  'demos/pay/customer': require('./pages/demos/pay'),
+  'demos/pay': require('./pages/demos/pay'),
+  'demos/decorators': require('./pages/demos/decorators'),
 };
