@@ -4,6 +4,7 @@ import {
   Text,
   StyleSheet,
 } from 'react-native'
+import PropTypes from 'prop-types'
 import DefaultLoading from './CommonLoading'
 import DefaultNetError from './CommonNetError'
 
@@ -15,7 +16,13 @@ const styles = StyleSheet.create({
   }
 })
 
-export default (WrapperComponent, LoadingComponent, NetErrorComponent) => class extends Component {
+const enhanceFetch = (WrappedComponent, LoadingComponent, NetErrorComponent) => class extends Component {
+  static propTypes = {
+    requestQueue: PropTypes.array.isRequired,
+    fetchData: PropTypes.func,
+    updateData: PropTypes.func,
+  }
+  
   constructor(props) {
     super(props)
     this.state = {
@@ -29,25 +36,39 @@ export default (WrapperComponent, LoadingComponent, NetErrorComponent) => class 
     this.fetchData()
   }
 
-  fetchData = () => {
-    setTimeout(() => {
+  fetchData = async () => {
+    try {
+      const { requestQueue } = this.props
+      const requestHandlers = []
+
+      requestQueue.map(request => requestHandlers.push(this.convertHandler(request)))
+      const requestResults = await Promise.all(requestHandlers)
+      this.setState({
+        isLoading: false,
+        data: requestResults.length === 1 ? requestResults[0] : requestResults,
+      })
+    } catch (e) {
       this.setState({
         isLoading: false,
         isLoadError: true,
       })
-    }, 1500)
+    }
   }
 
-  testReload = () => {
-    setTimeout(() => {
-      this.setState({
-        isLoading: false,
-        data: [0, 1, 2, 3, 4],
-      })
-    }, 1000)
+  convertHandler = ({url, options = {}}) => {
+    return new Promise((resolve, reject) => {
+      fetch(url, options)
+        .then(res => res.json())
+        // TODO：实际上这里还应有接口响应 code 的判断，eg：code === 1 → success
+        // 具体跟接口同事协商即可
+        .then(responseData => resolve(responseData))
+        .catch(err => reject(err))
+    })
   }
 
-  handleReload = () => this.setState({isLoading: true, isLoadError: false}, this.testReload)
+  handleReload = () => this.setState({ isLoading: true, isLoadError: false }, this.fetchData)
+
+  handleUpdateData = data => this.setState({ data })
 
   render() {
     const { style, ...rest } = this.props
@@ -61,12 +82,16 @@ export default (WrapperComponent, LoadingComponent, NetErrorComponent) => class 
         {isLoading && <ShowedLoading />}
         {isLoadError && <ShowedNetError onReload={this.handleReload} />}
         {isShowContent &&
-          <WrapperComponent
+          <WrappedComponent
             {...rest}
             data={data}
+            updateData={this.handleUpdateData}
+            fetchData={this.fetchData}
           />
         }
       </View>
     )
   }
 }
+
+export { enhanceFetch }
