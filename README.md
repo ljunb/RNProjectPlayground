@@ -1,3 +1,15 @@
+## 目录
+- [概览](#概览)
+- [开发相关](#开发相关)
+  - [关于导航](#关于导航)
+  - [关于页面](#关于页面)
+  - [关于Demo目录](#关于Demo目录)
+  - [关于组件](#关于组件)
+  - [关于HOC应用（网络占位图处理）](#关于HOC应用)
+    - [初始版](#初始版)
+    - [支持并发](#支持并发)
+    - [其他思考](#其他思考)
+
 ## 概览
 这是一个自己随意玩耍的仓库，主要涉及的东西有：
 > * 采用原生 `UINavigationController` 实现导航功能：push、pop、popTo、popToRoot
@@ -5,19 +17,11 @@
 > * 采用 MobX 和 MST 组织数据
 > * 其他一些尝试实例
 
-## 目录
-- [开发相关](#开发相关)
-  - [关于导航](#1、关于导航)
-  - [关于页面](#2、关于页面)
-  - [关于Demo目录](#3、关于Demo目录)
-  - [关于组件](#4、关于组件)
-  - [关于HOC应用](#5、关于HOC应用)
-
 ## 开发相关
-### 1、关于导航
+### 关于导航
 [CJNavigation](https://github.com/ljunb/RNProjectPlayground/blob/master/src/bridges/CJNavigation.js) 是封装原生 `UINavigationController` 的一个桥接模块，提供常见的导航入栈、出栈功能。每个 React Native 页面，都是通过新建 [RNPayloadViewController](https://github.com/ljunb/RNProjectPlayground/blob/master/ios/RNPayloadViewController.m) 实例来加载不同 `RCTRootView` 实现的，并添加一个 `pageName` 作为页面标识。
 
-### 2、关于页面
+### 关于页面
 每新建一个页面，都需要在 [routers](https://github.com/ljunb/RNProjectPlayground/blob/master/src/routers.js) 中配置：
 ```
 // routers.js
@@ -30,7 +34,7 @@ export default {
 ```
 导航跳转或是返回时，`pageName` 将作为 `CJNavigation` 各方法的参数，如 `CJNavigation.push('search')` 或是 `CJNavigation.popTo('home')`。
 
-### 3、关于Demo目录
+### 关于Demo目录
 * [gallery](https://github.com/ljunb/RNProjectPlayground/blob/master/src/pages/demos/gallery/index.js) 
 是类朋友圈查看图片效果的尝试，不过页码切换有所不一样，支持设置形变动画。运行示例：
 ![demo](https://github.com/ljunb/screenshots/blob/master/gallery.gif)
@@ -50,7 +54,7 @@ export default {
 
 ![demo](https://github.com/ljunb/screenshots/blob/master/password_input.gif)
 
-### 4、关于组件
+### 关于组件
 * [PullRefreshListView](https://github.com/ljunb/RNProjectPlayground/blob/master/src/components/PullRefreshListView.js)
 是对 [react-native-smart-pull-to-refresh-listview](https://github.com/react-native-component/react-native-smart-pull-to-refresh-listview) 
 的二次封装，可自定义下拉刷新、上拖加载更多的样式，也添加了空列表、数据加载出错时（分有数据和无数据）的样式定制，更适用于商业项目使用。简单使用示例：
@@ -115,14 +119,14 @@ export default class MsgList extends Component {
 }
 ```
 
-### 5、关于HOC应用
+### 关于HOC应用
 基本上，每个页面都会存在首屏渲染和网络出错的占位图，大部分情况下，我们会发现其中的实现逻辑大同小异，所以看到这些页面，自己经常觉得代码很冗余，一直想着有没一些优化的方法。
 
 较早之前写过一个关于新手引导的[组件](https://github.com/ljunb/rn-beginner-guidance-decorator)，是对 HOC 的简单应用，大抵是抽取公用的代码逻辑做为上一层的封装，新手引导内容则由具体组件去负责。基于这种思路，尝试对网络请求的通用业务需求做一次解耦简化，期望是通过一次编写 HOC ，然后不再涉及首屏渲染，或是网络出错这些状态处理的编写逻辑，并支持动态配置不同的占位组件。
 
-于是，有了这个[初始版](https://github.com/ljunb/RNProjectPlayground/blob/master/src/pages/demos/decorators/index.js) 。
+于是，有了这个[尝试](https://github.com/ljunb/RNProjectPlayground/blob/master/src/pages/demos/decorators/index.js) 。
 
-#### 5.1、概览
+#### 初始版
 罗列的代码酌情省略不必要内容：
 
 ```javascript
@@ -181,7 +185,7 @@ export default (WrappedComponent, LoadingComponent, NetErrorComponent) => class 
 * `LoadingComponent`、`NetErrorComponent` 用于配置占位组件，如果没有传入，则设置为默认的占位图，体现通用性和可配置性
 * 目标组件 `WrappedComponent` 接收 `data` 作为 `props`，传递界面渲染所需数据
 
-#### 5.2、使用方式
+使用方式：
 ```javascript
 import FetchDecorator from './FetchDecorator'
 import TargetList from './TargetList'
@@ -205,7 +209,7 @@ export default class extends PureComponent {
 }
 ```
 
-#### 5.3、初版修改
+#### 支持并发
 主要针对并发请求的修改，以及页面数据的更新处理：
 ```javascript
 // FetchDecorator.js
@@ -355,7 +359,7 @@ export default () => {
 ```
 很明显，其实 `FinalList` 就是智能组件，用于进行占位图、网络请求的配置，或者还有其他配置；而 `TargetList` 则是木偶组件，无须感知与 UI 无关的其他东西。到这一步，假如要新建业务页面，那么需要做的工作，就是做好接口和占位图的按需配置，然后直接进行 UI 的编码工作即可，无须再处理首屏渲染和网络出错逻辑。
 
-#### 5.4、其他思考
+#### 其他思考
 * 列表下拉刷新、加载更多支持？
 
 > 为 `WrappedComponent` 增加 `enableRefresh`、`enableLoadMore` 的 `props`，来开启或忽略这些功能。但是页码的参数名？page？亦或pageNo？
