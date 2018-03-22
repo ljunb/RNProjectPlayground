@@ -6,8 +6,9 @@
   - [关于Demo目录](#关于Demo目录)
   - [关于组件](#关于组件)
   - [关于HOC应用（网络占位图处理）](#关于HOC应用)
-    - [初始版](#初始版)
-    - [支持并发](#支持并发)
+    - [代码概览](#代码概览)
+    - [代码梳理](#代码梳理)
+    - [使用方式](#使用方式)
     - [其他思考](#其他思考)
 
 ## 概览
@@ -126,95 +127,12 @@ export default class MsgList extends Component {
 
 于是，有了这个[尝试](https://github.com/ljunb/RNProjectPlayground/blob/master/src/pages/demos/decorators/index.js) 。
 
-#### 初始版
-罗列的代码酌情省略不必要内容：
-
-```javascript
-import DefaultLoading from './CommonLoading'
-import DefaultNetError from './CommonNetError'
-
-export default (WrappedComponent, LoadingComponent, NetErrorComponent) => class extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      isLoading: true,
-      isLoadError: false,
-      data: null,
-    }
-  }
-
-  componentDidMount() {
-    this.fetchData()
-  }
-
-  fetchData = () => {
-    setTimeout(() => {
-      this.setState({
-        isLoading: false,
-        data: [0, 1, 2, 3, 4]
-      })
-    }, 1500)
-  }
-
-  handleReload = () => this.setState({isLoading: true, isLoadError: false}, this.fetchData)
-
-  render() {
-    const { style, ...rest } = this.props
-    const { isLoadError, isLoading, data } = this.state
-    const isShowContent = !isLoading && !isLoadError
-    const ShowedLoading = LoadingComponent || DefaultLoading
-    const ShowedNetError = NetErrorComponent || DefaultNetError
-
-    return (
-      <View style={[styles.root, style]}>
-        {isLoading && <ShowedLoading />}
-        {isLoadError && <ShowedNetError onReload={this.handleReload} />}
-        {isShowContent &&
-          <WrappedComponent
-            {...rest}
-            data={data}
-          />
-        }
-      </View>
-    )
-  }
-} 
-```
-简单解释为：
-* HOC 负责 `isLoading`、`isLoadError` 的管理，完成不同占位图的渲染
-* `LoadingComponent`、`NetErrorComponent` 用于配置占位组件，如果没有传入，则设置为默认的占位图，体现通用性和可配置性
-* 目标组件 `WrappedComponent` 接收 `data` 作为 `props`，传递界面渲染所需数据
-
-使用方式：
-```javascript
-import FetchDecorator from './FetchDecorator'
-import TargetList from './TargetList'
-
-const CustomerLoading = () => {
-  return (
-    <Text>Customer Loading...</Text>
-  )
-}
-
-const FinalList = FetchDecorator(TargetList, CustomerLoading)
-
-export default class extends PureComponent {
-  render() {
-    return (
-      <View style={styles.root}>
-        <FinalList />
-      </View>
-    )
-  }
-}
-```
-
-#### 支持并发
-主要针对并发请求的修改，以及页面数据的更新处理：
+#### 代码概览
+罗列的代码中，将省略部分不必要内容：
 ```javascript
 // FetchDecorator.js
 
-const enhanceFetch = (WrappedComponent, LoadingComponent, NetErrorComponent) => class extends Component {
+const enhanceFetch = (WrappedComponent, options) => class extends Component {
   static propTypes = {
     requestQueue: PropTypes.array.isRequired, // A.1
     fetchData: PropTypes.func, // B.1
@@ -272,8 +190,8 @@ const enhanceFetch = (WrappedComponent, LoadingComponent, NetErrorComponent) => 
     const { style, ...rest } = this.props
     const { isLoadError, isLoading, data } = this.state
     const isShowContent = !isLoading && !isLoadError
-    const ShowedLoading = LoadingComponent || DefaultLoading
-    const ShowedNetError = NetErrorComponent || DefaultNetError
+    const ShowedLoading = options && options.loading || DefaultLoading
+    const ShowedNetError = options && options.error || DefaultNetError
 
     return (
       <View style={[styles.root, style]}>
@@ -294,14 +212,19 @@ const enhanceFetch = (WrappedComponent, LoadingComponent, NetErrorComponent) => 
 
 export { enhanceFetch }
 ```
-简单梳理：
+#### 代码梳理
+* HOC 负责 `isLoading`、`isLoadError` 的管理，完成不同占位图的渲染
+* 暴露 `enhanceFetch(component: ReactComponent, options: object)` 的接口，根据需要在 `options` 中配置 `loading` 和 `error`。如无设置，则使用默认的占位图
+* 目标组件 `WrappedComponent` 接收 `data` 作为 `props`，传递界面渲染所需数据
+
+关于 `props`：
 * `A.x` → `requestQueue`：这里主要是接收多个请求的配置及其接口响应处理。每个请求将保持 `{url: ‘’, options: {}}` 的格式，触发请求之前会进行 `Promise` 化，然后基于 `Promise.all()` 进行并发。单请求将返回一个结果，并发请求将返回一个结果数组，与传入的请求参数顺序一一对应
 * `B.x` → `fetchData`：如果页面需要重新请求数据，通过 `this.props.fetchData()` 的方式触发
 * `C.x` → `updateData`：单纯的进行本地数据更新，可采用 `this.props.updateData(newData)` 的方式，`newData` 为最新数据，格式应与旧数据保持一致
 
-使用方式：
+#### 使用方式：
 ```javascript
-import { enhanceFetch } from './FetchDecorator'
+import { enhanceFetch } from './HOCUtils'
 
 class TargetList extends PureComponent {
 
@@ -347,7 +270,7 @@ const CustomerLoading = () => {
 }
 
 // 进行修饰
-const FinalList = enhanceFetch(TargetList, CustomerLoading)
+const FinalList = enhanceFetch(TargetList, { loading: CustomerLoading })
 
 export default () => {
   const requestQueue = [
@@ -362,6 +285,7 @@ export default () => {
 #### 其他思考
 * 列表下拉刷新、加载更多支持？
 
-> 为 `WrappedComponent` 增加 `enableRefresh`、`enableLoadMore` 的 `props`，来开启或忽略这些功能。但是页码的参数名？page？亦或pageNo？
+> 1. 为 `WrappedComponent` 增加 `enableRefresh`、`enableLoadMore` 的 `props`，来开启或忽略这些功能。但是页码的参数名？page？亦或pageNo？
+> 2. 目前项目中的列表基于 [react-native-smart-pull-to-refresh-listview](https://github.com/react-native-component/react-native-smart-pull-to-refresh-listview) 做了二次封装，满足通用的首屏渲染和网络出错的处理，不过该组件目前仍然未采用 `FlatList` 实现
 
 * 其他暂未想到

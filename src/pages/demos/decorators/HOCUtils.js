@@ -16,7 +16,7 @@ const styles = StyleSheet.create({
   }
 })
 
-const enhanceFetch = (WrappedComponent, LoadingComponent, NetErrorComponent) => class extends Component {
+const enhanceFetch = (WrappedComponent, options) => class extends Component {
   static propTypes = {
     requestQueue: PropTypes.array.isRequired,
     fetchData: PropTypes.func,
@@ -74,8 +74,8 @@ const enhanceFetch = (WrappedComponent, LoadingComponent, NetErrorComponent) => 
     const { style, ...rest } = this.props
     const { isLoadError, isLoading, data } = this.state
     const isShowContent = !isLoading && !isLoadError
-    const ShowedLoading = LoadingComponent || DefaultLoading
-    const ShowedNetError = NetErrorComponent || DefaultNetError
+    const ShowedLoading = options && options.loading || DefaultLoading
+    const ShowedNetError = options && options.error || DefaultNetError
 
     return (
       <View style={[styles.root, style]}>
