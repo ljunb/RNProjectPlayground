@@ -5,7 +5,7 @@
   - [关于页面](#关于页面)
   - [关于Demo目录](#关于Demo目录)
   - [关于组件](#关于组件)
-  - [关于HOC应用（网络占位图处理）](#关于HOC应用)
+  - [关于HOC应用（网络占位图处理）](#关于hoc应用)
     - [代码概览](#代码概览)
     - [代码梳理](#代码梳理)
     - [使用方式](#使用方式)
@@ -130,13 +130,11 @@ export default class MsgList extends Component {
 #### 代码概览
 罗列的代码中，将省略部分不必要内容：
 ```javascript
-// FetchDecorator.js
+// HOCUtils.js
 
 const enhanceFetch = (WrappedComponent, options) => class extends Component {
   static propTypes = {
-    requestQueue: PropTypes.array.isRequired, // A.1
-    fetchData: PropTypes.func, // B.1
-    updateData: PropTypes.func, // C.1
+    requestQueues: PropTypes.array.isRequired, // A.1
   }
   
   constructor(props) {
@@ -154,11 +152,11 @@ const enhanceFetch = (WrappedComponent, options) => class extends Component {
 
   fetchData = async () => {
     try {
-      const { requestQueue } = this.props
+      const { requestQueues } = this.props
       const requestHandlers = []
 
-      requestQueue.map(request => requestHandlers.push(this.convertHandler(request)))
-      const requestResults = await Promise.all(requestHandlers) // A.3
+      requestQueues.map(request => requestHandlers.push(this.convertHandler(request)))
+      const requestResults = await Promise.all(requestHandlers) // A.2
       this.setState({
         isLoading: false,
         data: requestResults.length === 1 ? requestResults[0] : requestResults,
@@ -184,7 +182,7 @@ const enhanceFetch = (WrappedComponent, options) => class extends Component {
 
   handleReload = () => this.setState({ isLoading: true, isLoadError: false }, this.fetchData)
 
-  handleUpdateData = data => this.setState({ data }) // C.2
+  handleUpdateData = data => this.setState({ data })
 
   render() {
     const { style, ...rest } = this.props
@@ -201,8 +199,8 @@ const enhanceFetch = (WrappedComponent, options) => class extends Component {
           <WrappedComponent
             {...rest}
             data={data}
-            fetchData={this.fetchData} // B.2
-            updateData={this.handleUpdateData} // C.3
+            fetchData={this.fetchData}
+            updateData={this.handleUpdateData}
           />
         }
       </View>
@@ -215,12 +213,14 @@ export { enhanceFetch }
 #### 代码梳理
 * HOC 负责 `isLoading`、`isLoadError` 的管理，完成不同占位图的渲染
 * 暴露 `enhanceFetch(component: ReactComponent, options: object)` 的接口，根据需要在 `options` 中配置 `loading` 和 `error`。如无设置，则使用默认的占位图
-* 目标组件 `WrappedComponent` 接收 `data` 作为 `props`，传递界面渲染所需数据
 
 关于 `props`：
-* `A.x` → `requestQueue`：这里主要是接收多个请求的配置及其接口响应处理。每个请求将保持 `{url: ‘’, options: {}}` 的格式，触发请求之前会进行 `Promise` 化，然后基于 `Promise.all()` 进行并发。单请求将返回一个结果，并发请求将返回一个结果数组，与传入的请求参数顺序一一对应
-* `B.x` → `fetchData`：如果页面需要重新请求数据，通过 `this.props.fetchData()` 的方式触发
-* `C.x` → `updateData`：单纯的进行本地数据更新，可采用 `this.props.updateData(newData)` 的方式，`newData` 为最新数据，格式应与旧数据保持一致
+* `A.x` → `requestQueues`：这里主要是接收多个请求的配置及其接口响应处理。每个请求将保持 `{url: ‘’, options: {}}` 的格式，触发请求之前会进行 `Promise` 化，然后基于 `Promise.all()` 进行并发。单请求将返回一个结果，并发请求将返回一个结果数组，与传入的请求参数顺序一一对应
+
+关于 `WrappedComponent` 的 `props`：
+* `data`：接口响应的数据
+* `fetchData`：如果页面需要重新请求数据，通过 `this.props.fetchData()` 的方式触发
+* `updateData`：单纯的进行本地数据更新，可采用 `this.props.updateData(newData)` 的方式，`newData` 为最新数据，格式应与旧数据保持一致
 
 #### 使用方式：
 ```javascript
@@ -273,18 +273,17 @@ const CustomerLoading = () => {
 const FinalList = enhanceFetch(TargetList, { loading: CustomerLoading })
 
 export default () => {
-  const requestQueue = [
+  const requestQueues = [
     {url: 'http://food.boohee.com/fb/v1/keywords', options: {}},
     {url: 'http://food.boohee.com/fb/v1/categories/list', options: {}}
   ]
-  return <FinalList requestQueue={requestQueue} />
+  return <FinalList requestQueues={requestQueues} />
 }
 ```
 很明显，其实 `FinalList` 就是智能组件，用于进行占位图、网络请求的配置，或者还有其他配置；而 `TargetList` 则是木偶组件，无须感知与 UI 无关的其他东西。到这一步，假如要新建业务页面，那么需要做的工作，就是做好接口和占位图的按需配置，然后直接进行 UI 的编码工作即可，无须再处理首屏渲染和网络出错逻辑。
 
 #### 其他思考
 * 列表下拉刷新、加载更多支持？
-
 > 1. 为 `WrappedComponent` 增加 `enableRefresh`、`enableLoadMore` 的 `props`，来开启或忽略这些功能。但是页码的参数名？page？亦或pageNo？
 > 2. 目前项目中的列表基于 [react-native-smart-pull-to-refresh-listview](https://github.com/react-native-component/react-native-smart-pull-to-refresh-listview) 做了二次封装，满足通用的首屏渲染和网络出错的处理，不过该组件目前仍然未采用 `FlatList` 实现
 

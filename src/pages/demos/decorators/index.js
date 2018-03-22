@@ -106,9 +106,9 @@ const CustomerLoading = () => {
 const FinalList = enhanceFetch(TargetList, { loading: CustomerLoading })
 
 export default () => {
-  const requestQueue = [
+  const requestQueues = [
     {url: 'http://food.boohee.com/fb/v1/keywords', options: {}},
     {url: 'http://food.boohee.com/fb/v1/categories/list', options: {}}
   ]
-  return <FinalList requestQueue={requestQueue} />
+  return <FinalList requestQueues={requestQueues} />
 }

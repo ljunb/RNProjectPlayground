@@ -18,9 +18,7 @@ const styles = StyleSheet.create({
 
 const enhanceFetch = (WrappedComponent, options) => class extends Component {
   static propTypes = {
-    requestQueue: PropTypes.array.isRequired,
-    fetchData: PropTypes.func,
-    updateData: PropTypes.func,
+    requestQueues: PropTypes.array.isRequired,
   }
   
   constructor(props) {
@@ -38,10 +36,10 @@ const enhanceFetch = (WrappedComponent, options) => class extends Component {
 
   fetchData = async () => {
     try {
-      const { requestQueue } = this.props
+      const { requestQueues } = this.props
       const requestHandlers = []
 
-      requestQueue.map(request => requestHandlers.push(this.convertHandler(request)))
+      requestQueues.map(request => requestHandlers.push(this.convertHandler(request)))
       const requestResults = await Promise.all(requestHandlers)
       this.setState({
         isLoading: false,
