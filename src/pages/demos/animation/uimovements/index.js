@@ -7,208 +7,158 @@ import {
   Animated,
   Dimensions,
   TouchableOpacity,
-  Easing
+  Easing,
+  Image,
 } from 'react-native'
+import { peoples } from './mock'
+import styles from './styles'
 
-const {width: screenW, height: screenH} = Dimensions.get('window')
+const { width: screenW, height: screenH } = Dimensions.get('window')
 const TargetHeight = 300
 const TargetScale = 3
 const TargetLeft = (screenW - 40 * TargetScale) / 2
 const TargetTop = 70
 
-const styles = StyleSheet.create({
-  root: {
-    flex: 1,
-  },
-  head: {
-    height: 64,
-    width: screenW,
-    backgroundColor: '#ccc',
-    alignItems: 'center',
-  },
-  peopleCell: {
-    height: 60,
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderBottomWidth: StyleSheet.hairlineWidth,
-  },
-  avatar: {
-    height: 40,
-    width: 40,
-    borderRadius: 20,
-    backgroundColor: 'red',
-    marginLeft: 16,
-    marginRight: 12,
-  },
-  activeAvatar: {
-    height: 40,
-    width: 40,
-    borderRadius: 20,
-    backgroundColor: 'red',
-    position: 'absolute',
-  },
-  textWrapper: {
-    position: 'absolute',
-    top: TargetTop + 40 * TargetScale + 20,
-    left: 0,
-    right: 0,
-    justifyContent: 'center',
-    alignItems: 'center',
-    opacity: 0,
-  },
-  coverView: {
-    position: 'absolute',
-    top: 0,
-    bottom: 0,
-    backgroundColor: '#ccc',
-  },
-  spreadCover: {
-    position: 'absolute',
-    top: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: '#fff',
-  },
-  galleryItem: {
-    backgroundColor: 'red',
-    height: 100,
-    width: 100,
-    borderRadius: 4,
-    marginRight: 16,
-  },
-  animatedGalleryItem: {
-    backgroundColor: '#fff',
-    height: 100,
-    width: 100,
-    borderRadius: 4,
-    position: 'absolute',
-    shadowOpacity: 0.75,
-    shadowRadius: 10,
-    shadowColor: '#ccc',
-    shadowOffset: { height: 0, width: 0 },
-  },
-  backBtn: {
-    backgroundColor: 'red',
-    height: 44,
-    width: 50,
-    position: 'absolute',
-    top: 20,
-    left: 0,
-  }
-})
-
-const peoples = [
-  {name: 'Tomy1', position: 'developer', avatar: '', gallery: [0, 1, 2]},
-  {name: 'Tomy2', position: 'manager', avatar: '', gallery: [0, 1, 2, 3]},
-  {name: 'Tomy3', position: 'cleaner', avatar: '', gallery: [0, 1, 2, 3]},
-  {name: 'Tomy4', position: 'tester', avatar: '', gallery: [0, 1, 2]},
-  {name: 'Tomy5', position: 'developer', avatar: '', gallery: [0, 1, 2, 3]},
-]
-
-export default class extends Component {
-
+export default class extends PureComponent {
   state = {
-    activeCellIndex: null,
-    showText: false,
-    galleryOrigin: {x: null, y: null},
-    activeGallery: null,
+    activeCellIndex: null, // 激活的cell下标
+    isHeadAnimatedDone: false, // 头像动画是否完毕
+    photoOrigin: {x: null, y: null}, // 当前激活的照片原始位置
+    activePhotoIndex: null, 
   }
-  headValue = new Animated.Value(0)
-  headPosition = new Animated.ValueXY()
-  textValue = new Animated.Value(0)
-  spreadValue = new Animated.Value(0)
-  galleryValue = new Animated.ValueXY()
-  origin = {x: null, y: null}
-  peopleRefs = []
+  cellAvatarRefs = [] // 所有头像的 ref 引用
+  avatarOrigin = {x: null, y: null} // 当前激活的头像初始位置
 
-  handlePressCell = index => {
-    this.peopleRefs[index].measure((x, y, width, height, pageX, pageY) => {
-      this.origin = {x: pageX, y: pageY}
-      this.headPosition.setValue({x: pageX, y: pageY})
+  headWrapperValue = new Animated.Value(0) // 头部背景动画值
+  avatarPositionValue = new Animated.ValueXY() // 头像位置动画值
+  headTextScaleXValue = new Animated.Value(0) // 头像下文字动画值
 
-      this.setState({activeCellIndex: parseInt(index)}, () => {
-        Animated.parallel([
-          Animated.timing(this.headValue, {
-            toValue: 1,
-          }),
-          Animated.timing(this.headPosition.x, {
-            toValue: TargetLeft,
-            duration: 250,
-          }),
-          Animated.timing(this.headPosition.y, {
-            toValue: TargetTop,
-          })
-        ]).start(() => {
-          this.setState({showText: true}, () => {
-            Animated.parallel([
-              Animated.spring(this.textValue, {
-                toValue: 1,
-                duration: 200,
-              }),
-              Animated.timing(this.spreadValue, {
-                toValue: 1,
-                delay: 150,
-              })
-            ]).start()
-          })
-        })
+  detailSpreadValue = new Animated.Value(0) // 个人详情展开动画值
+  photoPositionValue = new Animated.ValueXY() // 照片位置动画值
+  
+  // ======================= Head paralle animations - Start =======================
+
+  get headParallelStartAnimation() {
+    return [
+      Animated.timing(this.headWrapperValue, {
+        toValue: 1,
+      }),
+      Animated.timing(this.avatarPositionValue.x, {
+        toValue: TargetLeft,
+        duration: 250,
+      }),
+      Animated.timing(this.avatarPositionValue.y, {
+        toValue: TargetTop,
       })
+    ]
+  }
+
+  get headTextParallelStartAnimation() {
+    return [
+      Animated.spring(this.headTextScaleXValue, {
+        toValue: 1,
+        duration: 200,
+      }),
+      Animated.timing(this.detailSpreadValue, {
+        toValue: 1,
+        delay: 150,
+      })
+    ]
+  }
+
+  /**
+   * 点击cell，进行转场动画
+   */
+  handlePressCell = index => {
+    this.cellAvatarRefs[index].measure((x, y, width, height, pageX, pageY) => {
+      // 初始位置跟动画值
+      this.avatarOrigin = {x: pageX, y: pageY}
+      this.avatarPositionValue.setValue({x: pageX, y: pageY})
+
+      // 记录激活的cell下标
+      this.setState({activeCellIndex: index}, this.startHeadParalleAnimation)
     })
   }
 
+  /**
+   * 开始头部相关的动画
+   */
+  startHeadParalleAnimation = () => {
+    Animated.parallel(this.headParallelStartAnimation).start(() => {
+      this.setState({isHeadAnimatedDone: true}, this.startHeadTextParalleAnimation)
+    })
+  }
+
+  /**
+   * 头像动画完毕，开始文本的动画
+   */
+  startHeadTextParalleAnimation = () => Animated.parallel(this.headTextParallelStartAnimation).start()
+
+  // ======================= Head paralle animations - End =======================
+  get headParallelEndAnimation() {
+    return [
+      Animated.timing(this.headWrapperValue, {
+        toValue: 0,
+      }),
+      Animated.timing(this.avatarPositionValue.x, {
+        toValue: this.avatarOrigin.x,
+      }),
+      Animated.timing(this.avatarPositionValue.y, {
+        toValue: this.avatarOrigin.y,
+        duration: 250
+      })
+    ]
+  }
+
+  /**
+   * 点击返回，执行复原动画
+   */
   handleHideAnimation = () => {
     this.setState({
-      showText: false,
+      isHeadAnimatedDone: false,
     }, () => {
-      Animated.parallel([
-        Animated.timing(this.headValue, {
-          toValue: 0,
-        }),
-        Animated.timing(this.headPosition.x, {
-          toValue: this.origin.x,
-        }),
-        Animated.timing(this.headPosition.y, {
-          toValue: this.origin.y,
-          duration: 250,
-        })
-      ]).start(() => {
-        this.textValue.setValue(0)
-        this.spreadValue.setValue(0)
-        this.origin = {x: null, y: null}
-        this.setState({
-          activeCellIndex: null,
-        })
+      Animated.parallel(this.headParallelEndAnimation).start(() => {
+        // 恢复默认值
+        this.headTextScaleXValue.setValue(0)
+        this.detailSpreadValue.setValue(0)
+
+        this.avatarOrigin = {x: null, y: null}
+        this.setState({ activeCellIndex: null })
       })
     })
   }
 
-  handleSelectGallery = (origin, index) => {
-    // this.galleryOrigin = {x: origin.pageX, y: origin.pageY}
+  // ======================= Photo animations =======================
+  /**
+   * 点击照片，开始照片查看动画
+   */
+  handleSelectGallery = ({ x, y }, index) => {
     this.setState({
-      galleryOrigin: {x: origin.pageX, y: origin.pageY},
-      activeGallery: index,
+      photoOrigin: { x, y },
+      activePhotoIndex: index,
     }, () => {
-      this.galleryValue.setValue({x: 0, y: 0})
-
-      Animated.spring(this.galleryValue, {
-        toValue: 1
-      }).start()
+      this.photoPositionValue.setValue({ x: 0, y: 0 })
+      Animated.spring(this.photoPositionValue, { toValue: 1 }).start()
     })
   }
 
+  /**
+   * 点击空白区域，收回照片
+   */
   handleHideGallery = () => {
-    Animated.timing(this.galleryValue, {
+    Animated.timing(this.photoPositionValue, {
       toValue: 0,
       duration: 200,
     }).start(() => {
       this.setState({
-        galleryOrigin: {x: null, y: null},
-        activeGallery: null
+        photoOrigin: { x: null, y: null },
+        activePhotoIndex: null
       })
     })
   }
 
-  renderItem = (item, key) => {
+
+  renderPeopleCell = (item, key) => {
     const isActive = this.state.activeCellIndex == key
 
     return (
@@ -218,157 +168,175 @@ export default class extends Component {
         style={[styles.peopleCell]}
         onPress={() => this.handlePressCell(key)}
       >
-        <View
-          ref={r => this.peopleRefs[key] = r}
+        <Image
+          ref={r => this.cellAvatarRefs[key] = r}
           style={[styles.avatar, isActive && {opacity: 0}]}
+          source={item.avatar}
         />
         <Text>{item.name}</Text>
       </TouchableOpacity>
     )
   }
 
-  renderGalleryItem = (item, key) => {
+  renderPhotoItem = (item, key) => {
     return (
-      <GalleryItem
-        key={`GalleryItem_${key}`}
+      <PhotoItem
+        key={`PhotoItem_${key}`}
+        photo={item}
         index={key}
-        isShowGallery={this.state.activeGallery === key}
+        isShowPhoto={this.state.activePhotoIndex === key}
         onSelect={this.handleSelectGallery}
       />
     )
   }
 
   render() {
-    const animatedHeadStyle = this.headValue.interpolate({
-      inputRange: [0, 1],
-      outputRange: [64, TargetHeight],
-    })
-    const left = this.headPosition.x
-    const top = this.headPosition.y
-    const opacity = this.state.activeCellIndex === null ? 0 : 1
-    const width = this.headValue.interpolate({
-      inputRange: [0, 1],
-      outputRange: [40, TargetScale * 40]
-    })
-    const borderRadius = this.headValue.interpolate({
-      inputRange: [0, 1],
-      outputRange: [20, TargetScale * 20]
-    })
-
-    const animatedHeadPositionStyle = {
-      left,
-      top,
-      opacity,
-      width,
-      borderRadius,
-      height: width,
+    const { activeCellIndex, activePhotoIndex, isHeadAnimatedDone, photoOrigin } = this.state
+    const activePeople = peoples[activeCellIndex]
+  
+    // header背景
+    const headCoverAnimatedStyle = {
+      height: this.headWrapperValue.interpolate({
+        inputRange: [0, 1],
+        outputRange: [64, TargetHeight],
+      })
     }
-
-    const leftCover = this.textValue.interpolate({
-      inputRange: [0, 1],
-      outputRange: [screenW / 2, 0]
-    })
-    const rightCover = this.textValue.interpolate({
-      inputRange: [0, 1],
-      outputRange: [screenW / 2, screenW]
-    })
-    const textWidth = this.textValue.interpolate({
-      inputRange: [0, 1],
-      outputRange: [screenW / 2, 0]
-    })
-    const bgOpacity = this.headValue.interpolate({
-      inputRange: [0, 1],
-      outputRange: [1, 0],
-    })
-    const spreadStyle = {
-      width: this.spreadValue.interpolate({
+    // 头像
+    const avatarAnimatedStyle = {
+      left: this.avatarPositionValue.x,
+      top: this.avatarPositionValue.y,
+      width: this.headWrapperValue.interpolate({
+        inputRange: [0, 1],
+        outputRange: [40, TargetScale * 40]
+      }),
+      height: this.headWrapperValue.interpolate({
+        inputRange: [0, 1],
+        outputRange: [40, TargetScale * 40]
+      }),
+      borderRadius: this.headWrapperValue.interpolate({
+        inputRange: [0, 1],
+        outputRange: [20, TargetScale * 20]
+      }),
+      opacity: activeCellIndex === null ? 0 : 1
+    }
+    // 原始背景透明度
+    const originBgAnimatedStyle = {
+      opacity: this.headWrapperValue.interpolate({
+        inputRange: [0, 1],
+        outputRange: [1, 0],
+      })
+    }
+    // 个人简介
+    const spreadCoverAnimatedStyle = {
+      width: this.detailSpreadValue.interpolate({
         inputRange: [0, 1],
         outputRange: [screenW, 0]
       })
     }
-
-    const galleryItemStyle = {
-      width: this.galleryValue.x.interpolate({
+    // 照片
+    const photoAnimatedStyle = {
+      width: this.photoPositionValue.x.interpolate({
         inputRange: [0, 1],
         outputRange: [100, 260]
       }),
-      height: this.galleryValue.y.interpolate({
+      height: this.photoPositionValue.y.interpolate({
         inputRange: [0, 1],
         outputRange: [100, 260]
       }),
-      left: this.galleryValue.x.interpolate({
+      left: this.photoPositionValue.x.interpolate({
         inputRange: [0, 1],
-        outputRange: [this.state.galleryOrigin.x, (screenW - 260) / 2]
+        outputRange: [photoOrigin.x, (screenW - 260) / 2]
       }),
-      top: this.galleryValue.y.interpolate({
+      top: this.photoPositionValue.y.interpolate({
         inputRange: [0, 1],
-        outputRange: [this.state.galleryOrigin.y, (screenH - 260) / 2]
-      })
+        outputRange: [photoOrigin.y, (screenH - 260) / 2]
+      }),
+      overflow: 'visible'
     }
+    // 查看图片时的背景
+    const photoCoverAnimatedStyle = [
+      StyleSheet.absoluteFill,
+      {
+        backgroundColor: 'rgba(255,255,255,0.4)',
+        opacity: this.photoPositionValue.x
+      }
+    ]
 
     return (
       <View style={styles.root}>
-        <Animated.View style={[styles.head, this.state.activeCellIndex !== null && {opacity: 0}]} />
-        <Animated.ScrollView style={{opacity: bgOpacity}}>
-          {peoples.map(this.renderItem)}
+        <Animated.View style={[styles.head, activeCellIndex !== null && {opacity: 0}]} />
+        <Animated.ScrollView style={originBgAnimatedStyle}>
+          {peoples.map(this.renderPeopleCell)}
         </Animated.ScrollView>
         <View
           style={StyleSheet.absoluteFill}
-          pointerEvents={this.state.activeCellIndex !== null ? "auto" : "none"}
+          pointerEvents={activeCellIndex !== null ? "auto" : "none"}
         >
-          <Animated.View style={[styles.head, {height: animatedHeadStyle}]}>
-            {this.state.activeCellIndex !== null && 
-            <Animated.View style={[styles.backBtn, {opacity: this.headValue}]}>
+          <Animated.View style={[styles.head, headCoverAnimatedStyle]}>
+            {activeCellIndex !== null && 
+            <Animated.View style={[styles.backBtn, {opacity: this.headWrapperValue}]}>
               <TouchableOpacity
                 activeOpacity={0.75}
-                style={StyleSheet.absoluteFill}
+                style={[StyleSheet.absoluteFill, {justifyContent: 'center', alignItems:  'center'}]}
                 onPress={this.handleHideAnimation}
               >
-                
+                <Text style={{color: '#fff', fontSize: 17, fontWeight: 'bold'}}>返回</Text>
               </TouchableOpacity>
             </Animated.View>
             }
-            <Animated.View style={[styles.activeAvatar, animatedHeadPositionStyle]} />
-            {this.state.showText && 
-              <Animated.View style={[styles.textWrapper, {opacity: 1}, {transform: [{scaleX: this.textValue}]}]}>
-                <Text>{peoples[this.state.activeCellIndex].name}</Text>
-                <Text>{peoples[this.state.activeCellIndex].position}</Text>
+            {isHeadAnimatedDone && 
+              <Animated.View style={[styles.textWrapper, {opacity: 1}, {transform: [{scaleX: this.headTextScaleXValue}]}]}>
+                <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 5, color: '#fff'}}>{activePeople.name}</Text>
+                <Text style={{fontSize: 14, color: '#fff'}}>{activePeople.position}</Text>
               </Animated.View>
             }
           </Animated.View>
-          {this.state.showText &&
+          {activeCellIndex !== null &&
+            <Animated.Image
+              style={[styles.activeAvatar, avatarAnimatedStyle]}
+              source={activePeople.avatar}
+            />
+          }
+          {isHeadAnimatedDone &&
             <View>
               <View style={{paddingHorizontal: 16, paddingVertical: 10}}>
+                <Text style={{fontSize: 16, fontWeight: 'bold', marginBottom: 8}}>关于我</Text>
                 <View style={{marginBottom: 10}}>
-                  <Text>姓名：{peoples[this.state.activeCellIndex].name}</Text>
-                  <Text>职位：{peoples[this.state.activeCellIndex].position}</Text>
+                  <Text style={styles.text}>姓名：{activePeople.name}</Text>
+                  <Text style={styles.text}>手机号码：{activePeople.mobile}</Text>
                 </View>
                 <View>
-                  <Text>姓名：{peoples[this.state.activeCellIndex].name}</Text>
-                  <Text>职位：{peoples[this.state.activeCellIndex].position}</Text>
+                  <Text style={styles.text}>职位：{activePeople.position}</Text>
+                  <Text style={styles.text}>住址：{activePeople.address}</Text>
                 </View>
-                <Animated.View style={[styles.spreadCover, spreadStyle]}/>
+                <Text style={{fontSize: 16, fontWeight: 'bold', marginTop: 16}}>关于生活</Text>
+                <Animated.View style={[styles.spreadCover, spreadCoverAnimatedStyle]}/>
               </View>
               <ScrollView
                 horizontal
+                showsHorizontalScrollIndicator={false}
                 style={{height: 100, width: screenW}}
                 contentContainerStyle={{paddingLeft: 16}}
               >
-                {peoples[this.state.activeCellIndex].gallery.map(this.renderGalleryItem)}
+                {activePeople.photos.map(this.renderPhotoItem)}
               </ScrollView>
             </View>
           }
-          {this.state.galleryOrigin.x !== null &&
+          {activePhotoIndex !== null &&
             <View
               style={StyleSheet.absoluteFill}
-              pointerEvents={this.state.galleryOrigin.x !== null ? "auto" : "none"}
+              pointerEvents={activePhotoIndex !== null ? "auto" : "none"}
             >
+              <Animated.View style={photoCoverAnimatedStyle}/>
               <TouchableOpacity
                 activeOpacity={1}
                 style={StyleSheet.absoluteFill}
                 onPress={this.handleHideGallery}
               >
-                <Animated.View style={[styles.animatedGalleryItem, galleryItemStyle]}/>
+                <Animated.Image
+                  source={activePeople.photos[activePhotoIndex]}
+                  style={[styles.animatedPhotoItem, photoAnimatedStyle]}
+                />
               </TouchableOpacity>
             </View>
           }
@@ -378,7 +346,7 @@ export default class extends Component {
   }
 }
 
-class GalleryItem extends PureComponent {
+class PhotoItem extends PureComponent {
 
   scaleValue = new Animated.Value(0)
 
@@ -395,22 +363,24 @@ class GalleryItem extends PureComponent {
 
   handlePress = () => {
     const { onSelect, index } = this.props
-    this.galleryItem.measure((x, y, width, height, pageX, pageY) => {
-      onSelect && onSelect({pageX, pageY, width, height}, index)
+    this.photoRef.measure((x, y, width, height, pageX, pageY) => {
+      onSelect && onSelect({x: pageX, y: pageY, width, height}, index)
     })
   }
 
   render() {
+    const { photo } = this.props
+
     return (
       <Animated.View
-        style={[styles.galleryItem, {transform: [{scale: this.scaleValue}]}, this.props.isShowGallery && {opacity: 0}]}
+        style={[styles.photoItem, {transform: [{scale: this.scaleValue}]}, this.props.isShowPhoto && {opacity: 0}]}
       >
         <TouchableOpacity 
           style={StyleSheet.absoluteFill}
           activeOpacity={0.75}
           onPress={this.handlePress}
         >
-          <View style={StyleSheet.absoluteFill} ref={r => this.galleryItem = r}/>
+          <Image source={photo} style={{height: 100, width: 100}} ref={r => this.photoRef = r} onLayout={()=>{}}/>
         </TouchableOpacity>
       </Animated.View>
     )

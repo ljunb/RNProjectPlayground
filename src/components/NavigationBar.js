@@ -113,7 +113,7 @@ const RightIconItem = ({onPress, icon}) => {
 
 export default class NavigationBar extends Component {
   static propTypes = {
-    style: View.propTypes.style,
+    style: PropTypes.any,
     title: PropTypes.string,
     titleStyle: PropTypes.object,
     rightTitle: PropTypes.string,

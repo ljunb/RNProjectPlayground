@@ -13,7 +13,7 @@ public class MainActivity extends ReactActivity {
         super.onCreate(savedInstanceState);
 
         Bundle bundle = new Bundle();
-        bundle.putString("pageName", "demos/pay/customer");
+        bundle.putString("pageName", "demos/animation/uimovements");
 
         ReactRootView rootView = new ReactRootView(this);
         rootView.startReactApplication(
