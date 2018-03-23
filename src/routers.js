@@ -20,6 +20,7 @@ export default {
   'demos/animation/path': require('./pages/demos/animation/path'),
   'demos/animation/headking': require('./pages/demos/animation/headking'),
   'demos/animation/headking/gaming': require('./pages/demos/animation/headking/gaming'),
+  'demos/animation/uimovements': require('./pages/demos/animation/uimovements'),
   'test': require('./pages/demos/animation/headking'),
   'demos/pay': require('./pages/demos/pay'),
   'demos/decorators': require('./pages/demos/decorators'),

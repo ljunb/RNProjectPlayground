@@ -3,7 +3,7 @@
 - [开发相关](#开发相关)
   - [关于导航](#关于导航)
   - [关于页面](#关于页面)
-  - [关于Demo目录](#关于Demo目录)
+  - [关于Demo目录](#关于demo目录)
   - [关于组件](#关于组件)
   - [关于HOC应用（网络占位图处理）](#关于hoc应用)
     - [代码概览](#代码概览)
@@ -54,6 +54,10 @@ export default {
 * [animation/pay](https://github.com/ljunb/RNProjectPlayground/blob/master/src/pages/demos/pay/PasswordInput.js) 是与支付宝类似的密码输入框：
 
 ![demo](https://github.com/ljunb/screenshots/blob/master/password_input.gif)
+
+* [animation/uimovements](https://github.com/ljunb/RNProjectPlayground/blob/master/src/pages/demos/animation/uimovements/index.js) 是偶然发现一位国外开发者的[仓库](https://github.com/kiok46/ReactNative-Animation-Challenges)，里面是参考 [UI Movement](https://uimovement.com/) 上的动画，所做的 React Native 实现，自己看完也是跃跃欲试，所以写了这个动画 Demo。运行示例：
+
+![demo](https://github.com/ljunb/screenshots/blob/master/uimovement.gif)
 
 ### 关于组件
 * [PullRefreshListView](https://github.com/ljunb/RNProjectPlayground/blob/master/src/components/PullRefreshListView.js)
