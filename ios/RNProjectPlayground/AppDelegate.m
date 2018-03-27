@@ -19,7 +19,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-  RNPayloadViewController *rootVC = [[RNPayloadViewController alloc] initWithPageName:@"demos/animation/uimovements"
+  RNPayloadViewController *rootVC = [[RNPayloadViewController alloc] initWithPageName:@"demos/carousel"
                                                                                params:nil];
   UINavigationController *unv = [[UINavigationController alloc] initWithRootViewController:rootVC];
   unv.navigationBarHidden = YES;

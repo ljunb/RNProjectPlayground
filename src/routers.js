@@ -24,4 +24,5 @@ export default {
   'test': require('./pages/demos/animation/headking'),
   'demos/pay': require('./pages/demos/pay'),
   'demos/decorators': require('./pages/demos/decorators'),
+  'demos/carousel': require('./pages/demos/carousel'),
 };
