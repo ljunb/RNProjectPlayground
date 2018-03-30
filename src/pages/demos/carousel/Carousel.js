@@ -53,6 +53,7 @@ export default class extends PureComponent {
     this.defaultOffsetX = -(screenW - props.contentWidth) / 2
     this.currentOffsetX = this.defaultOffsetX
     this.currenIndex = props.initialRenderIndex
+    this.animationValue = new Animated.Value(0)
   }
 
   componentDidMount() {
@@ -66,12 +67,17 @@ export default class extends PureComponent {
     this.flatList && this.flatList.scrollToOffset({animated: true, offset})
   }
 
-  renderItem = ({item}) => {
+  renderItem = ({item, index}) => {
     const { contentWidth, renderItem } = this.props
+    const scale = this.animationValue.interpolate({
+      inputRange: [(index - 1) * contentWidth, index * contentWidth, (index + 1) * contentWidth],
+      outputRange: [1, 1.2, 1],
+      extrapolate: 'clamp'
+    })
     return (
-      <View style={[styles.item, {width: contentWidth}]} pointerEvents="none">
+      <Animated.View style={[styles.item, {width: contentWidth, transform: [{scale}]}]} pointerEvents="none">
         <Text>{item}</Text>
-      </View>
+      </Animated.View>
     )
   }
 
@@ -108,6 +114,8 @@ export default class extends PureComponent {
     this.updateOffset()
   }
 
+  handleScroll = Animated.event([{ nativeEvent: { contentOffset: { x: this.animationValue } } }])
+
   render() {
     const { data, contentMargin, style } = this.props
     const containerStyle = [
@@ -129,6 +137,7 @@ export default class extends PureComponent {
           scrollEventThrottle={16}
           onScrollEndDrag={this.handleScrollEndDrag}
           onMomentumScrollEnd={this.handleMomentumScrollEnd}
+          onScroll={this.handleScroll}
         />
       </View>
     )

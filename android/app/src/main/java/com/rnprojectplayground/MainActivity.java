@@ -13,7 +13,7 @@ public class MainActivity extends ReactActivity {
         super.onCreate(savedInstanceState);
 
         Bundle bundle = new Bundle();
-        bundle.putString("pageName", "demos/carousel");
+        bundle.putString("pageName", "main_tab");
 
         ReactRootView rootView = new ReactRootView(this);
         rootView.startReactApplication(
@@ -21,6 +21,7 @@ public class MainActivity extends ReactActivity {
                 "RNProjectPlayground",
                 bundle
         );
+        ReactActivityManager.pushActivity(this);
         setContentView(rootView);
     }
 }

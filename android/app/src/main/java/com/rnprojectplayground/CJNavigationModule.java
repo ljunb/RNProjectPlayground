@@ -21,10 +21,17 @@ public class CJNavigationModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void push(String pageName, ReadableMap param) {
-        Activity activity = getCurrentActivity();
+        Activity activity = ReactActivityManager.topActivity();
         Intent intent = new Intent();
         intent.setClass(activity, RNPayloadActivity.class);
         intent.putExtra("pageName", pageName);
         activity.startActivity(intent);
+    }
+
+    @ReactMethod
+    public void pop(Boolean animated) {
+        Activity activity = ReactActivityManager.topActivity();
+        if (activity == null) return;
+        activity.finish();
     }
 }

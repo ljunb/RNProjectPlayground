@@ -10,6 +10,7 @@ import com.facebook.react.modules.core.DefaultHardwareBackBtnHandler;
 public class RNPayloadActivity extends AppCompatActivity implements DefaultHardwareBackBtnHandler{
 
     protected ReactRootView rootView;
+    public String viewName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,7 +26,7 @@ public class RNPayloadActivity extends AppCompatActivity implements DefaultHardw
                 "RNProjectPlayground",
                 bundle
         );
-
+        ReactActivityManager.pushActivity(this);
         setContentView(rootView);
         // 替换mReactRootView的context为当前Activity
 //        MutableContextWrapper contextWrapper = (MutableContextWrapper) rootView.getContext();
