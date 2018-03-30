@@ -17,6 +17,7 @@ public class RNPayloadActivity extends AppCompatActivity implements DefaultHardw
         super.onCreate(savedInstanceState);
 
         String pageName = getIntent().getStringExtra("pageName");
+        viewName = pageName;
 
         Bundle bundle = new Bundle();
         bundle.putString("pageName", pageName);
@@ -28,9 +29,6 @@ public class RNPayloadActivity extends AppCompatActivity implements DefaultHardw
         );
         ReactActivityManager.pushActivity(this);
         setContentView(rootView);
-        // 替换mReactRootView的context为当前Activity
-//        MutableContextWrapper contextWrapper = (MutableContextWrapper) rootView.getContext();
-//        contextWrapper.setBaseContext(this);
     }
 
     @Override
