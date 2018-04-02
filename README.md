@@ -19,19 +19,19 @@
 ## 概览
 这是一个自己随意玩耍的仓库，主要涉及的东西有以下几部分：
 * 基于 [MobX](https://github.com/mobxjs/mobx) 和 [MST](https://github.com/mobxjs/mobx-state-tree) 重新实现了 React Native 版食物派的个别页面
-* 通过 `UINavigationController` 和 Activity ，实现导航功能：push、pop、popTo、popToRoot。每个页面，React Native 都只作为 View 的角色存在
+* 通过 UINavigationController 和 Activity ，实现导航功能：push、pop、popTo、popToRoot。每个页面，React Native 都只作为 View 的角色存在
 * 收集一些自己的练习 Demo、组件，或是项目实践中的想法
 
 ## 导航功能
-口袋蜜蜂（[AppStore](https://itunes.apple.com/cn/app/%E5%8F%A3%E8%A2%8B%E8%9C%9C%E8%9C%82/id1268533784?mt=8) | [小米应用商店](http://app.mi.com/details?id=cn.com.pcauto.pocket)）是混编 App，在项目启动的前期，跟同事一起尝试了原生与 React Native 页面之间的各种导航场景，在此过程中也尝试了不同的几个 React Native 导航组件，略去其中细节，一番尝试后，回过头来想：既然是原生为主导，为何不就地取材，直接用的原生导航功能？React Native 本来就应该只承担 View 层的角色，数据的流转，实际仍是在原生层面。
+口袋蜜蜂（[AppStore](https://itunes.apple.com/cn/app/%E5%8F%A3%E8%A2%8B%E8%9C%9C%E8%9C%82/id1268533784?mt=8) | [小米应用商店](http://app.mi.com/details?id=cn.com.pcauto.pocket)）是混编 App，在项目启动的前期，跟同事一起尝试了原生与 React Native 页面之间的各种导航场景，在此过程中也尝试了不同的几个 React Native 导航组件，略去其中细节，一番尝试后，回过头来想：既然是原生为主导，为何不就地取材，直接用原生的导航功能？React Native 本来就应该只承担 `View` 层的角色，数据的流转，实际仍是在原生层面。
 
-因此，每次跳转的起始或最终界面，不管是原生，还是 React Native 页面，实际上都是原生到原生的导航。React Native 可通过注册多个 Component 的形式来加载多个页面，口袋在几个版本的迭代下来之后，我们总结了较为推荐的方式是：
+因此，每次跳转的起始或最终界面，不管是原生，还是 React Native 页面，实际上都是原生到原生的导航。React Native 可通过注册多个 `Component` 的形式来加载多个页面，而口袋在几个版本的迭代下来之后，我们总结了较为推荐的方式是：
 
-> * 共同：只注册一个 Component，不同页面在初始参数中添加标识位区分
+> * 共同：只注册一个 `Component`，不同页面在初始参数中添加标识位区分
 > * iOS：采用单例 `RCTBridge`，并通过 `- initWithBridge: moduleName: initialProperties:` 的方式来创建 `RCTRootView`，然后在 `initialProperties` 这个初始化参数字典中，传入页面标识位和其他必要数据。
-> * Android：通过一个 [ReactActivityManager](https://github.com/ljunb/RNProjectPlayground/blob/master/android/app/src/main/java/com/rnprojectplayground/ReactActivityManager.java) 来模拟 Activity 栈的管理，可以实现与 iOS 一样的 `popTo` 功能。在传递 Bundle 数据的时候，需注意的是 Map 到 Bundle 的转换处理。因为在 React Native 端调用 `push(pageName, params)` 时，带参情况传入的 `params` 为字典，映射到原生端的 Map，Bundle 对象存入数据时需按对应类型来进行获取。
+> * Android：通过一个 [ReactActivityManager](https://github.com/ljunb/RNProjectPlayground/blob/master/android/app/src/main/java/com/rnprojectplayground/ReactActivityManager.java) 来模拟 Activity 栈的管理，可以实现与 iOS 一样的 `popTo` 功能。在传递 `Bundle` 数据的时候，需注意的是 `Map` 到 `Bundle` 的转换处理。因为在 React Native 端调用 `push(pageName, params)` 时，带参情况传入的 `params` 为字典，映射到原生端的 `Map`，`Bundle` 对象存入数据时需按对应类型来进行获取。
 
-在这个模式中，不同 React Native 页面之间的通知事件可正常使用，也可以按需在项目中集成 Redux 或是 MobX。口袋中集成了 MobX，类似代码在 App.js 文件中：
+在这个模式中，不同 React Native 页面之间的通知事件可正常使用，也可以按需在项目中集成 Redux 或是 MobX。口袋中集成了 MobX，类似代码在 [App.js](https://github.com/ljunb/RNProjectPlayground/blob/master/App.js) 文件中：
 ```javascript
 // App.js
 import { Provider } from 'mobx-react';
@@ -39,7 +39,7 @@ import Router from './src/routers';
 import stores from './src/stores';
 
 export default (props) => {
-  const {pageName: routerKey} = props;
+  const { pageName: routerKey } = props;
   const Page = Router[routerKey].default;
   return (
     <Provider {...stores}>
@@ -49,11 +49,23 @@ export default (props) => {
 };
 ```
 
-`store` 的注入与普通的纯 React Native 项目一致，在相关页面通过 `inject` 按需检出子树即可。`Router` 是路由配置，页面标识位和页面文件路径是字典中 `key` 和 `value` 的关系，所以只要在 [routers](https://github.com/ljunb/RNProjectPlayground/blob/master/src/routers.js) 中配置好关系，通过 `props` 的 `pageName`，即可匹配到不同的 React Native 页面。
+`store` 的注入与普通的纯 React Native 项目一致，在相关页面通过 `inject` 按需检出子树即可。`Router` 是路由配置，页面标识位和页面文件路径是字典中 `key` 和 `value` 的关系：
+```javascript
+// routers.js
+
+export default {
+  'main_tab': require('./pages'),
+  'home': require('./pages/home'),
+  'search': require('./pages/home/Search'),
+  ...
+}
+```
+所以只要在 [routers](https://github.com/ljunb/RNProjectPlayground/blob/master/src/routers.js) 中配置好关系，通过 `props` 的 `pageName`，即可匹配到不同的 React Native 页面。
 
 [↑ 返回顶部](#目录)
 
 ## Demo目录
+这里主要是一些平时在有意无意中看到一些效果时，而做的 Demo 实践。没有一一罗列，更多的 Demo 可 `clone` 项目到本地查看。
 ### 类朋友圈查看图片
 [该效果](https://github.com/ljunb/RNProjectPlayground/blob/master/src/pages/demos/gallery/index.js) 
  是类朋友圈查看图片效果的尝试，不过页码切换有所不一样，支持设置形变动画。运行示例：
@@ -79,7 +91,7 @@ export default (props) => {
 ![demo](https://github.com/ljunb/screenshots/blob/master/password_input.gif)
 
 ### 类WhatsApp转场动画
-该 [Demo](https://github.com/ljunb/RNProjectPlayground/blob/master/src/pages/demos/animation/uimovements/index.js) 是自己在偶然之中，发现一位国外开发者的[仓库](https://github.com/kiok46/ReactNative-Animation-Challenges)，里面是参考 [UI Movement](https://uimovement.com/) 上的动画而做的 React Native 实现，自己看完也是跃跃欲试，所以写了这个动画 Demo。运行示例：
+该 [Demo](https://github.com/ljunb/RNProjectPlayground/blob/master/src/pages/demos/animation/uimovements/index.js) 是自己在偶然之中，发现一位国外开发者的 [仓库](https://github.com/kiok46/ReactNative-Animation-Challenges)，里面是参考 [UI Movement](https://uimovement.com/) 上的动画而做的 React Native 实现，自己看完也是跃跃欲试，所以写了这个动画 Demo。运行示例：
 
 ![demo](https://github.com/ljunb/screenshots/blob/master/uimovement.gif)
 
@@ -156,9 +168,9 @@ export default class MsgList extends Component {
 ## 关于HOC应用
 基本上，每个页面都会存在首屏渲染和网络出错的占位图，大部分情况下，我们会发现其中的实现逻辑大同小异，所以看到这些页面，自己经常觉得代码很冗余，一直想着有没一些优化的方法。
 
-较早之前写过一个关于新手引导的[组件](https://github.com/ljunb/rn-beginner-guidance-decorator)，是对 HOC 的简单应用，大抵是抽取公用的代码逻辑做为上一层的封装，新手引导内容则由具体组件去负责。基于这种思路，尝试对网络请求的通用业务需求做一次解耦简化，期望是通过一次编写 HOC ，然后不再涉及首屏渲染，或是网络出错这些状态处理的编写逻辑，并支持动态配置不同的占位组件。
+较早之前写过一个关于新手引导的 [组件](https://github.com/ljunb/rn-beginner-guidance-decorator)，是对 HOC 的简单应用，大抵是抽取公用的代码逻辑做为上一层的封装，新手引导内容则由具体组件去负责。基于这种思路，尝试对网络请求的通用业务需求做一次解耦简化，期望是通过一次编写 HOC ，然后不再涉及首屏渲染，或是网络出错这些状态处理的编写逻辑，并支持动态配置不同的占位组件。
 
-于是，有了这个[尝试](https://github.com/ljunb/RNProjectPlayground/blob/master/src/pages/demos/decorators/index.js) 。
+于是，有了这个 [尝试](https://github.com/ljunb/RNProjectPlayground/blob/master/src/pages/demos/decorators/index.js) 。
 
 ### 代码概览
 罗列的代码中，将省略部分不必要内容：
