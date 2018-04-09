@@ -21,7 +21,7 @@ import CJNavigation from '../../bridges/CJNavigation';
 @observer
 export default class Profile extends Component {
 
-  handleLogin = () => CJNavigation.push('demo/gallery');
+  handleLogin = () => CJNavigation.push('demos/ts', {name: 'ljunb'});
 
   render() {
     const cellStyle = {

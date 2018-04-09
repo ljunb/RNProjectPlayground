@@ -19,13 +19,17 @@ public class RNPayloadActivity extends AppCompatActivity implements DefaultHardw
         String pageName = getIntent().getStringExtra("pageName");
         viewName = pageName;
 
-        Bundle bundle = new Bundle();
-        bundle.putString("pageName", pageName);
+        Bundle paramsBundle = getIntent().getExtras();
+        if (paramsBundle == null) {
+            paramsBundle = new Bundle();
+        }
+        paramsBundle.putString("pageName", pageName);
+
         rootView = new ReactRootView(this);
         rootView.startReactApplication(
                 MainApplication.reactInstanceManager,
                 "RNProjectPlayground",
-                bundle
+                paramsBundle
         );
         ReactActivityManager.pushActivity(this);
         setContentView(rootView);
