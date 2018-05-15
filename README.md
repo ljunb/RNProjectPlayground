@@ -8,6 +8,7 @@
   - [类Path菜单动画](#类path菜单动画)
   - [常见支付密码输入框](#常见支付密码输入框)
   - [类WhatsApp转场动画](#类whatsapp转场动画)
+  - [带索引SectionList](#带索引sectionlist)
 - [组件](#组件)
   - [PullRefreshListView](#pullrefreshlistview)
 - [HOC应用（网络占位图处理）](#关于hoc应用)
@@ -94,6 +95,17 @@ export default {
 该 [Demo](https://github.com/ljunb/RNProjectPlayground/blob/master/src/pages/demos/animation/uimovements/index.js) 是自己在偶然之中，发现一位国外开发者的 [仓库](https://github.com/kiok46/ReactNative-Animation-Challenges)，里面是参考 [UI Movement](https://uimovement.com/) 上的动画而做的 React Native 实现，自己看完也是跃跃欲试，所以写了这个动画 Demo。运行示例：
 
 ![demo](https://github.com/ljunb/screenshots/blob/master/uimovement.gif)
+
+[↑ 返回顶部](#目录)
+
+### 带索引SectionList
+口袋项目中有一个选择汽车的分组列表，在指压并滑动索引时会有动画，项目启动时评估过 React Native 实现的性能问题，最终还是选择了原生实现。恰巧早上写完了家居的业务功能，想着用纯 React Native 来实现这个列表：
+
+![demo](https://github.com/ljunb/screenshots/blob/master/atoz.gif)
+
+iOS 在模拟器上的效果如上所示，JavaScript 线程掉帧还是挺严重的，UI FPS 看起来倒是正常，实际滑动起来表现并不卡。Android 端在模拟器上表现一般般，没有在真机中测试，并且还需要处理 `overflow` 的问题，所以到时布局还需根据平台做适配处理。
+
+其实之前用官方自带的 SectionList 实现过这个模块，但是效果挺差的，分组跨度较大时，点击索引滚动时会出现白屏（只在 iOS 模拟器下调试，Android 没做进一步尝试）。当前 Demo 基于 [react-native-largelist](https://github.com/bolan9999/react-native-largelist)实现（自己只在该示例中使用了该组件，并未集成到商业项目中）。
 
 [↑ 返回顶部](#目录)
 

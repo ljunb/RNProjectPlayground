@@ -12,10 +12,16 @@ import {
   StyleSheet,
   Text,
   Dimensions,
+  Animated,
+  Platform,
+  StatusBar,
 } from 'react-native';
 import { LargeList } from 'react-native-largelist';
 
 const SCREEN_HEIGHT = Dimensions.get('window').height;
+const INDICATOR_HEIGHT = SCREEN_HEIGHT - 80 * 2;
+const SAMPLE_COUNT = 26;
+
 const styles = StyleSheet.create({
   root: {
     flex: 1,
@@ -39,11 +45,12 @@ const styles = StyleSheet.create({
     right: 0,
     top: 80,
     bottom: 80,
-    width: 30,
-    backgroundColor: '#eee',
+    width: Platform.OS === 'android' ? 80 : 30,
+    backgroundColor: 'transparent',
+    alignItems: 'flex-end'
   },
   item: {
-    height: (SCREEN_HEIGHT - 160) / 26,
+    height: INDICATOR_HEIGHT / SAMPLE_COUNT,
     width: 30,
     justifyContent: 'center',
     alignItems: 'center',
@@ -51,7 +58,9 @@ const styles = StyleSheet.create({
 })
 
 export default class extends PureComponent {
+  
   lastSelectedIndex = null;
+  animationValue = new Animated.Value(-SCREEN_HEIGHT);
 
   renderItem = (section, row) => {
     return (
@@ -71,11 +80,26 @@ export default class extends PureComponent {
 
   renderIndicatorView = () => {
     const components = [];
-    for (let i = 0; i < 26; i++) {
+    for (let i = 0; i < SAMPLE_COUNT; i++) {
+      const scale = this.animationValue.interpolate({
+        inputRange: [i-3, i-2, i-1, i, i+1, i+2, i+3],
+        outputRange: [1, 1.2, 1.5, 1.7, 1.5, 1.2, 1],
+        extrapolate: 'clamp'
+      });
+      const translateX = this.animationValue.interpolate({
+        inputRange: [i-4, i-3, i-2, i-1, i, i+1, i+2, i+3, i+4],
+        outputRange: [0, -15, -25, -30, -30, -30, -25, -15, 0],
+        extrapolate: 'clamp'
+      });
+      const opacity = this.animationValue.interpolate({
+        inputRange: [i-4, i-3, i-2, i-1, i, i+1, i+2, i+3, i+4],
+        outputRange: [1, 0.9, 0.5, 0.2, 1, 0.2, 0.5, 0.9, 1],
+        extrapolate: 'clamp'
+      })
       components.push(
-        <View key={`Indicator_${i}`} style={[styles.item]} pointerEvents="none">
-          <Text>{i}</Text>
-        </View>
+        <Animated.View key={`Indicator_${i}`} style={[styles.item, {transform: [{scale}, {translateX}], opacity}]} pointerEvents="none">
+          <Text style={{backgroundColor: 'transparent'}}>{i}</Text>
+        </Animated.View>
       );
     }
     return components;
@@ -84,14 +108,19 @@ export default class extends PureComponent {
   handleIndicatorMove = evt => {
     const ev = evt.nativeEvent.touches[0];
     const originX = 80;
-    const itemHeight = (SCREEN_HEIGHT - 160) / 26;
+    const itemHeight = INDICATOR_HEIGHT / SAMPLE_COUNT;
     const index = Math.floor((ev.pageY - originX) / itemHeight);
     
     if (this.lastSelectedIndex !== index) {
       this.lastSelectedIndex = index;
       this.largeList && this.largeList.scrollToIndexPath({section: index, row: 0});
+      this.animationValue.setValue(index);
     }
   };
+
+  handleRelease = () => {
+    this.animationValue.setValue(SCREEN_HEIGHT);
+  }
 
   render() {
     return (
@@ -103,7 +132,7 @@ export default class extends PureComponent {
           safeMargin={600}
           showsVerticalScrollIndicator={false}
           numberOfRowsInSection={() => 10}
-          numberOfSections={() => 26}
+          numberOfSections={() => SAMPLE_COUNT}
           heightForCell={(section, row) => 44}
           heightForSection={section => 50}
           renderSection={this.renderSection}
@@ -115,6 +144,7 @@ export default class extends PureComponent {
           onMoveShouldSetResponder={() => true}
           onResponderGrant={this.handleIndicatorMove}
           onResponderMove={this.handleIndicatorMove}
+          onResponderRelease={this.handleRelease}
         >
           {this.renderIndicatorView()}
         </View>
