@@ -21,6 +21,7 @@
     "react-native-image-gallery": "^2.1.4",
     "react-native-image-pan-zoom": "^2.0.16",
     "react-native-image-zoom-viewer": "^2.0.18",
+    "react-native-largelist": "^1.2.12",
     "react-native-scrollable-tab-view": "^0.8.0",
     "react-native-smart-pull-to-refresh-listview": "git+https://github.com/ljunb/react-native-smart-pull-to-refresh-listview.git",
     "rn-beginner-guidance-decorator": "^1.0.0"
