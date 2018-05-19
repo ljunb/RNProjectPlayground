@@ -293,6 +293,10 @@ art@^0.10.0:
   version "0.10.1"
   resolved "https://registry.npmjs.org/art/-/art-0.10.1.tgz#38541883e399225c5e193ff246e8f157cf7b2146"
 
+art@^0.10.1:
+  version "0.10.2"
+  resolved "https://registry.npmjs.org/art/-/art-0.10.2.tgz#55c3738d82a3a07e0623943f070ebe86297253d9"
+
 asap@~2.0.3:
   version "2.0.6"
   resolved "https://registry.npmjs.org/asap/-/asap-2.0.6.tgz#e50347611d7e690943208bbdafebcbc2fb866d46"
@@ -3942,6 +3946,13 @@ react-mixin@^3.0.5:
     object-assign "^4.0.1"
     smart-mixin "^2.0.0"
 
+react-native-circular-progress@^0.1.2:
+  version "0.1.2"
+  resolved "https://registry.npmjs.org/react-native-circular-progress/-/react-native-circular-progress-0.1.2.tgz#49bf297fe58c1431e08c09bf653d283680abda9f"
+  dependencies:
+    art "^0.10.1"
+    prop-types "^15.6.0"
+
 react-native-fast-image@^2.0.1:
   version "2.0.1"
   resolved "https://registry.npmjs.org/react-native-fast-image/-/react-native-fast-image-2.0.1.tgz#210fe23a8ed5ae4a68977b555167eb7440ad7374"
@@ -3966,6 +3977,12 @@ react-native-image-zoom-viewer@^2.0.18:
   dependencies:
     nt-transmit-transparently "^1.0.7"
     react-native-image-pan-zoom "^2.0.16"
+
+react-native-largelist@^1.2.12:
+  version "1.2.12"
+  resolved "https://registry.npmjs.org/react-native-largelist/-/react-native-largelist-1.2.12.tgz#05a94cdf47ca0c63b102348a1b6c4ae566ce2ecc"
+  dependencies:
+    prop-types "^15.6.0"
 
 react-native-scrollable-tab-view@^0.8.0:
   version "0.8.0"

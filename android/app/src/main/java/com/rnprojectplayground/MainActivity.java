@@ -13,7 +13,7 @@ public class MainActivity extends ReactActivity {
         super.onCreate(savedInstanceState);
 
         Bundle bundle = new Bundle();
-        bundle.putString("pageName", "main_tab");
+        bundle.putString("pageName", "demos/largelist");
 
         ReactRootView rootView = new ReactRootView(this);
         rootView.startReactApplication(
