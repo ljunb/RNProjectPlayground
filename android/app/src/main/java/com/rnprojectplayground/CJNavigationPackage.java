@@ -12,6 +12,8 @@ import java.util.List;
 public class CJNavigationPackage implements ReactPackage {
     @Override
     public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
+        CJNotification.reactContext = reactContext;
+
         List<NativeModule> list = new ArrayList<>();
         list.add(new CJNavigationModule(reactContext));
         return list;
