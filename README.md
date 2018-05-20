@@ -105,7 +105,7 @@ export default {
 
 iOS 在模拟器上的效果如上所示，JavaScript 线程掉帧还是挺严重的，UI FPS 看起来倒是正常，实际滑动起来表现并不卡。Android 端在模拟器上表现一般般，没有在真机中测试，并且还需要处理 `overflow` 的问题，所以到时布局还需根据平台做适配处理。
 
-其实之前用官方自带的 SectionList 实现过这个模块，但是效果挺差的，分组跨度较大时，点击索引滚动时会出现白屏（只在 iOS 模拟器下调试，Android 没做进一步尝试）。当前 Demo 基于 [react-native-largelist](https://github.com/bolan9999/react-native-largelist) 实现（自己只在该示例中使用了该组件，并未集成到商业项目中）。
+其实之前用官方自带的 SectionList 实现过这个模块，但是效果挺差的，分组跨度较大时，点击索引滚动时会出现白屏（只在 iOS 模拟器下调试，Android 没做进一步尝试）。当前 [Demo](https://github.com/ljunb/RNProjectPlayground/blob/master/src/pages/demos/largelist/index.js) 基于 [react-native-largelist](https://github.com/bolan9999/react-native-largelist) 实现（自己只在该示例中使用了该组件，并未集成到商业项目中）。
 
 [↑ 返回顶部](#目录)
 

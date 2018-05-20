@@ -2,7 +2,7 @@
  * @Description: 通知工具类：1）Native ➡ JavaScript；2）JavaScript ➡ JavaScript
  * @Author: cookiej
  * @Date: 2018-05-19 14:47:01
- * @Last Modified by: mikey.zhaopeng
+ * @Last Modified by: cookiej
  * @Last Modified time: 2018-05-19 15:39:07
  */
 import {
@@ -55,8 +55,10 @@ class Emitter {
   /**
    * 发送 RN 页面之间的通知
    * @param event 事件名称
+   * @param body 发送内容
    */
-  static sendRNEvent = event => DeviceEventEmitter.emit(event);
+  static sendRNEvent = (event, body) => DeviceEventEmitter.emit(event, body);
+
 }
 
 export default Emitter;
