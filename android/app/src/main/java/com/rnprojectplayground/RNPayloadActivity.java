@@ -1,6 +1,5 @@
 package com.rnprojectplayground;
 
-import android.content.MutableContextWrapper;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
@@ -38,5 +37,11 @@ public class RNPayloadActivity extends AppCompatActivity implements DefaultHardw
     @Override
     public void invokeDefaultOnBackPressed() {
         super.onBackPressed();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ReactActivityManager.removeActivity(this);
     }
 }
