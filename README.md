@@ -1,6 +1,7 @@
 ## 目录
 - [概览](#概览)
 - [导航功能](#导航功能)
+- [与JavaScript的事件交互](#与javascript的事件交互)
 - [Demo目录](#demo目录)
   - [类朋友圈查看图片](#类朋友圈查看图片)
   - [新手引导装饰器](#新手引导装饰器)
@@ -62,6 +63,131 @@ export default {
 }
 ```
 所以只要在 [routers](https://github.com/ljunb/RNProjectPlayground/blob/master/src/routers.js) 中配置好关系，通过 `props` 的 `pageName`，即可匹配到不同的 React Native 页面。
+
+[↑ 返回顶部](#目录)
+
+## 与JavaScript的事件交互
+既然是混编的 App ，那就免不了原生与 JavaScript 之间的事件交互。为了更方便地进行两端的发布&订阅，封装一个 [CJNotification](https://github.com/ljunb/RNProjectPlayground/blob/master/src/utils/CJNotification.js) 的工具类。从 JavaScript 到原生端这一块的交互，当前工具类是不提供相关方法的，只是处理原生到 JavaScript 和 不同 React Native 页面之间的事件发布。工具类概览：
+```javascript
+import {
+  NativeEventEmitter,
+  NativeModules,
+  Platform,
+  DeviceEventEmitter,
+} from 'react-native';
+
+const { CJNotificationCenter } = NativeModules;
+const emitter = Platform.OS === 'android' ? new NativeEventEmitter() : new NativeEventEmitter(CJNotificationCenter);
+const NativeEventName = 'NATIVE_TO_RN';
+
+class Emitter {
+  /**
+   * 监听从 Native 发来的事件
+   * @param event 事件名称
+   * @param callback 监听回调
+   * @function dispose 销毁监听对象
+   */
+  static addNativeListener = (event, callback) => {
+    const subscription = emitter.addListener(
+      NativeEventName,
+      reminder => {
+        const { eventName, body } = reminder;
+        if (eventName !== event) return;
+        callback && callback(body);
+      },
+    );
+    subscription.dispose = () => subscription && subscription.remove();
+    return subscription;
+  };
+
+  /**
+   * 监听不同 RN 页面的通知事件
+   * @param event 事件名称
+   * @param callback 监听回调
+   * @function dispose 销毁监听对象
+   */
+  static addRNListener = (event, callback) => {
+    const subscription = DeviceEventEmitter.addListener(
+      event,
+      reminder => callback && callback(reminder),
+    );
+    subscription.dispose = () => subscription && subscription.remove();
+    return subscription;
+  };
+
+  /**
+   * 发送 RN 页面之间的通知
+   * @param event 事件名称
+   * @param body 发送内容
+   */
+  static sendRNEvent = (event, body) => DeviceEventEmitter.emit(event, body);
+}
+
+export default Emitter;
+```
+这里是原生端 [iOS](https://github.com/ljunb/RNProjectPlayground/blob/master/ios/Utils/CJNotificationCenter.m) 和 [Android](https://github.com/ljunb/RNProjectPlayground/blob/master/android/app/src/main/java/com/rnprojectplayground/CJNotification.java) 的对应实现。
+
+使用方式示例：
+```javascript
+import CJNotification from '../utils/CJNotification';
+
+export default class TestPage extends Component {
+  componentDidMount() {
+    this.addNativeListener();
+    this.addRNListener();
+  }
+
+  addNativeListener = () => {
+    this.nativeListener = CJNotification.addNativeListener('updateUserInfo', userInfo => {
+      const { name } = userInfo;
+      // todo sth
+    });
+  };
+
+  addRNListener = () => {
+    this.rnListener = CJNotification.addRNListener('updateFeedList', () => {
+      // todo sth
+    });
+  };
+
+  componentWillUnmount() {
+    this.nativeListener.dispose();
+    this.rnListener.dispose();
+  }
+
+  render() {
+    ...
+  }
+}
+```
+iOS 端原生发送事件示例：
+```obj-c
+#import "CJNotificationCenter.h"
+
+// 发送事件到 JavaScript
+[[CJNotificationCenter center] sendRNEventWithName:@"updateUserInfo" body:@{@"name": @"cookiej"}];
+```
+Android 端：
+```java
+// 发送事件到 JavaScript
+WritableMap body = Arguments.createMap();
+body.putString("name", "cookiej");
+CJNotification.sendRNEvent("updateUserInfo", body);
+```
+不同 React Naitve 页面之间：
+```javascript
+import CJNotification from '../utils/CJNotification';
+
+export default class OtherPage extends Component {
+
+  handleUpdateTestPageFeedList = () => CJNotification.sendRNEvent("updateFeedList");
+
+  render() {
+    ...
+  }
+}
+
+```
 
 [↑ 返回顶部](#目录)
 
