@@ -10,6 +10,7 @@
   - [常见支付密码输入框](#常见支付密码输入框)
   - [类WhatsApp转场动画](#类whatsapp转场动画)
   - [带索引SectionList](#带索引sectionlist)
+  - [粘性TabBar](#粘性tabbar)
 - [组件](#组件)
   - [PullRefreshListView](#pullrefreshlistview)
 - [HOC应用（网络占位图处理）](#关于hoc应用)
@@ -232,6 +233,15 @@ export default class OtherPage extends Component {
 iOS 在模拟器上的效果如上所示，JavaScript 线程掉帧还是挺严重的，UI FPS 看起来倒是正常，实际滑动起来表现并不卡。Android 端在模拟器上表现一般般，没有在真机中测试，并且还需要处理 `overflow` 的问题，所以到时布局还需根据平台做适配处理。
 
 其实之前用官方自带的 SectionList 实现过这个模块，但是效果挺差的，分组跨度较大时，点击索引滚动时会出现白屏（只在 iOS 模拟器下调试，Android 没做进一步尝试）。当前 [Demo](https://github.com/ljunb/RNProjectPlayground/blob/master/src/pages/demos/largelist/index.js) 基于 [react-native-largelist](https://github.com/bolan9999/react-native-largelist) 实现（自己只在该示例中使用了该组件，并未集成到商业项目中）。
+
+[↑ 返回顶部](#目录)
+
+### 粘性TabBar
+可能存在于某些商城类 App 中，在页面滚动至顶部时，分段菜单停留在导航栏底部，表现为粘性效果，并可点击菜单项滚动到对应的分组。在 iPhone 效果如下：
+
+![demo](https://github.com/ljunb/screenshots/blob/master/sticky.gif)
+
+不过比较意外的是，iPhone 上运行时，滑动过程中设置了粘性的子组件老是会跳动，Android 反而表现良好……当前 [Demo](https://github.com/ljunb/RNProjectPlayground/blob/master/src/pages/demos/stickytabbar/index.js) 没有集成下拉刷新，可能仍需基于某些第三方来做定制。
 
 [↑ 返回顶部](#目录)
 

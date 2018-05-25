@@ -19,7 +19,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-  RNPayloadViewController *rootVC = [[RNPayloadViewController alloc] initWithPageName:@"demos/largelist"
+  RNPayloadViewController *rootVC = [[RNPayloadViewController alloc] initWithPageName:@"demos/stickytabbar"
                                                                                params:nil];
   UINavigationController *unv = [[UINavigationController alloc] initWithRootViewController:rootVC];
   unv.navigationBarHidden = YES;
