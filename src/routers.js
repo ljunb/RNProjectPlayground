@@ -26,7 +26,7 @@ export default {
   'demos/decorators': require('./pages/demos/decorators'),
   'demos/carousel': require('./pages/demos/carousel'),
   'demos/largelist': require('./pages/demos/largelist'),
-  'sectionlist/largelist': require('./pages/demos/largelist/SectionList.largelist'),
-  'sectionlist/listview': require('./pages/demos/largelist/SectionList.listview'),
+  'demos/sectionlist/largelist': require('./pages/demos/largelist/SectionList.largelist'),
+  'demos/sectionlist/listview': require('./pages/demos/largelist/SectionList.listview'),
   'demos/stickytabbar': require('./pages/demos/stickytabbar'),
 };

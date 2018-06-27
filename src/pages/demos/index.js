@@ -18,6 +18,9 @@ export default class Demo extends PureComponent {
     {title: '仿Path菜单动画', path: 'animation/path'},
     {title: '仿支付宝密码输入框', path: 'pay'},
     {title: 'Decorator实现通用loading、error配置', path: 'decorators'},
+    {title: 'UIMovement转场动画', path: 'animation/uimovements'},
+    {title: '带索引分组列表', path: 'sectionlist/largelist'},
+    {title: '粘性TabBar', path: 'stickytabbar'}
   ];
 
   renderDemoItem = (demo, index) => {

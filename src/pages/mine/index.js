@@ -23,6 +23,8 @@ export default class Profile extends Component {
 
   handleLogin = () => CJNavigation.push('demos/ts', {name: 'ljunb'});
 
+  handlePressStaticCell = title => alert(title);
+
   render() {
     const cellStyle = {
       borderTopWidth: StyleSheet.hairlineWidth,
@@ -37,15 +39,18 @@ export default class Profile extends Component {
             title="我的照片"
             style={{borderBottomWidth: StyleSheet.hairlineWidth}}
             imageName={require('../../resource/ic_my_photos.png')}
+            onPress={this.handlePressStaticCell}
           />
           <ProfileStaticCell
             title="我的收藏"
             style={{borderBottomWidth: StyleSheet.hairlineWidth}}
             imageName={require('../../resource/ic_my_collect.png')}
+            onPress={this.handlePressStaticCell}
           />
           <ProfileStaticCell
             title="上传食物数据"
             imageName={require('../../resource/ic_my_upload.png')}
+            onPress={this.handlePressStaticCell}
           />
         </View>
       </View>
