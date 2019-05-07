@@ -2,8 +2,8 @@
  * @Description: 轮播图动画指示器示例
  * @Author: cookiej
  * @Date: 2019-05-07 13:50:18
- * @Last Modified by: cookiej
- * @Last Modified time: 2019-05-07 13:50:18
+ * @Last Modified by: mikey.zhaopeng
+ * @Last Modified time: 2019-05-07 22:48:20
  */
 
 import React, { PureComponent } from 'react';
@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
   }
 });
 
-export default class AnimatedIndicatorDemo extends PureComponent {
+export default class extends PureComponent {
   animatedValue = new Animated.Value(0);
 
   handleScroll = (evt) => {

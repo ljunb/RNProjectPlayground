@@ -29,4 +29,5 @@ export default {
   'demos/sectionlist/largelist': require('./pages/demos/largelist/SectionList.largelist'),
   'demos/sectionlist/listview': require('./pages/demos/largelist/SectionList.listview'),
   'demos/stickytabbar': require('./pages/demos/stickytabbar'),
+  'demos/indicator': require('./pages/demos/indicator'),
 };

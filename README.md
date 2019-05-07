@@ -247,9 +247,10 @@ iOS 在模拟器上的效果如上所示，JavaScript 线程掉帧还是挺严�
 [↑ 返回顶部](#目录)
 
 ### 轮播图动画指示器
-暂时做了两种样式：
-* 流动样式
-* `scale` 渐变样式
+暂时做了流动样式，后面考虑再做个 `scale` 渐变样式：
+![demo](https://github.com/ljunb/screenshots/blob/master/indicator.mov)
+
+[↑ 返回顶部](#目录)
 
 ## 组件
 ### PullRefreshListView

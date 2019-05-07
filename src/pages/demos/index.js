@@ -20,7 +20,8 @@ export default class Demo extends PureComponent {
     {title: 'Decorator实现通用loading、error配置', path: 'decorators'},
     {title: 'UIMovement转场动画', path: 'animation/uimovements'},
     {title: '带索引分组列表', path: 'sectionlist/largelist'},
-    {title: '粘性TabBar', path: 'stickytabbar'}
+    {title: '粘性TabBar', path: 'stickytabbar'},
+    {title: '轮播图动画指示器', path: 'indicator'},
   ];
 
   renderDemoItem = (demo, index) => {
